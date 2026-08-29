@@ -1,0 +1,103 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "opera-eco"
+version = "0.4.4"
+description = "Dependency and skill manager for the OPERA ecosystem"
+readme = "README.md"
+requires-python = ">=3.11"
+authors = [
+    {name="Paul Labonne", email="Paul.Labonne@bankofengland.co.uk"},
+    {name="Diego Lopez", email="Diego.Lopez@bankofengland.co.uk"},
+]
+
+maintainers = [
+    {name="Paul Labonne", email="Paul.Labonne@bankofengland.co.uk"},
+]
+
+license = "MIT"
+keywords = ["time-series", "forecasting", "evaluation", "backtesting", "economics"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Scientific/Engineering",
+]
+
+dependencies = [
+    "numpy",
+    "pandas",
+]
+
+[project.urls]
+Documentation = "https://bank-of-england.github.io/opera-eco/"
+Repository = "https://github.com/bank-of-england/opera-eco"
+Issues = "https://github.com/bank-of-england/opera-eco/issues"
+
+# Integration manifest containing the pinned ecosystem versions.
+# Update these pins only after the contract and pipeline suites pass.
+[project.optional-dependencies]
+modules = [
+    "forecast_evaluation == 0.1.13",
+    "forecast_realtime[models]==0.5.3",
+    "forecast_combo==0.1.1",
+    "bvar==0.3.1",
+    "nowcast-midas==0.0.1",
+    "news_decomp==0.0.7",
+]
+
+test = [
+    "opera-eco[modules]",
+    "pytest",
+    "pytest-xdist",
+    "pytest-timeout",
+    "pandera",
+    "syrupy",
+]
+
+notebooks = [
+    "marimo==0.24.0",
+]
+
+dev = [
+    "build",
+    "packaging",
+    "pre-commit",
+    "pydoclint",
+    "ruff",
+    "twine",
+]
+
+docs = [
+    "mkdocstrings[python]",
+    "zensical",
+]
+
+[project.scripts]
+opera = "opera.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+"opera.skills" = ["*.md"]
+"opera.tests" = ["**/*.py", "**/__snapshots__/*.ambr"]
+
+[tool.pytest.ini_options]
+testpaths = ["src/opera/tests"]
+markers = [
+    "contract: shared-schema and interface contract tests (fast)",
+    "skill_snippet: isolated executable skill documentation snippets",
+    "pipeline: cross-module end-to-end tests (slow)",
+    "bvar: pipeline tests exercising the BVAR model",
+    "midas: pipeline tests exercising the MIDAS-family models (MIDAS, MultiMIDAS, SC-MIDAS)",
+    "news: pipeline tests exercising the news/decomposition pipeline",
+    "mixed_freq: pipeline tests exercising the real-time mixed-frequency pipeline",
+    "ecosystem: pipeline tests exercising the full OPERA ecosystem illustration",
+]

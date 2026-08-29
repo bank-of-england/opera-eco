@@ -1,0 +1,9 @@
+{
+  "release-type": "python",
+  "include-v-in-tag": true,
+  "packages": {
+    ".": {
+      "package-name": "opera-eco"
+    }
+  }
+}

@@ -1,0 +1,145 @@
+# serializer version: 1
+# name: test_scmidas_data
+  dict({
+    'date': list([
+      Timestamp('2023-12-31 00:00:00'),
+      Timestamp('2023-12-31 00:00:00'),
+      Timestamp('2023-12-31 00:00:00'),
+      Timestamp('2024-03-31 00:00:00'),
+      Timestamp('2024-03-31 00:00:00'),
+      Timestamp('2024-03-31 00:00:00'),
+    ]),
+    'forecast_horizon': list([
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+    ]),
+    'frequency': list([
+      'Q',
+      'Q',
+      'Q',
+      'Q',
+      'Q',
+      'Q',
+    ]),
+    'metric': list([
+      'pop',
+      'pop',
+      'pop',
+      'pop',
+      'pop',
+      'pop',
+    ]),
+    'source': list([
+      'ForecastMIDASCombo',
+      'ForecastMIDASCombo',
+      'ForecastMIDASCombo',
+      'ForecastMIDASCombo',
+      'ForecastMIDASCombo',
+      'ForecastMIDASCombo',
+    ]),
+    'target_minus_vintage': list([
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ]),
+    'unique_id': list([
+      'ForecastMIDASCombo',
+      'ForecastMIDASCombo',
+      'ForecastMIDASCombo',
+      'ForecastMIDASCombo',
+      'ForecastMIDASCombo',
+      'ForecastMIDASCombo',
+    ]),
+    'value': list([
+      -1.463519,
+      -1.162748,
+      -1.010624,
+      -1.170159,
+      -1.32345,
+      -1.240096,
+    ]),
+    'variable': list([
+      'var_quarterly_a',
+      'var_quarterly_a',
+      'var_quarterly_a',
+      'var_quarterly_a',
+      'var_quarterly_a',
+      'var_quarterly_a',
+    ]),
+    'vintage_date': list([
+      Timestamp('2024-01-31 00:00:00'),
+      Timestamp('2024-02-29 00:00:00'),
+      Timestamp('2024-03-31 00:00:00'),
+      Timestamp('2024-04-30 00:00:00'),
+      Timestamp('2024-05-31 00:00:00'),
+      Timestamp('2024-06-30 00:00:00'),
+    ]),
+  })
+# ---
+# name: test_scmidas_data_decomposition
+  dict({
+    'base_vintage_date': list([
+      NaT,
+      NaT,
+    ]),
+    'component': list([
+      'var_monthly_a',
+      'var_monthly_b',
+    ]),
+    'contribution': list([
+      -0.666613,
+      -0.796906,
+    ]),
+    'date': list([
+      Timestamp('2023-12-30 00:00:00'),
+      Timestamp('2023-12-30 00:00:00'),
+    ]),
+    'decomposition': list([
+      'level',
+      'level',
+    ]),
+    'forecast_horizon': list([
+      0,
+      0,
+    ]),
+    'forecast_metric': list([
+      'pop',
+      'pop',
+    ]),
+    'frequency': list([
+      'Q',
+      'Q',
+    ]),
+    'news': list([
+      nan,
+      nan,
+    ]),
+    'revision_source': list([
+      None,
+      None,
+    ]),
+    'source': list([
+      'ForecastMIDASCombo',
+      'ForecastMIDASCombo',
+    ]),
+    'variable': list([
+      'var_quarterly_a',
+      'var_quarterly_a',
+    ]),
+    'vintage_date': list([
+      Timestamp('2024-01-31 00:00:00'),
+      Timestamp('2024-01-31 00:00:00'),
+    ]),
+    'weight': list([
+      0.426022,
+      0.573978,
+    ]),
+  })
+# ---

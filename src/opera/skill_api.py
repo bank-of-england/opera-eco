@@ -154,6 +154,47 @@ def _validated_exports(module_name: str, module: object) -> list[str]:
     return sorted(exports)
 
 
+# TODO: Short-term fix
+def _normalize_signature(signature: str) -> str:
+    """Normalize typing spellings that vary between Python versions."""
+    for wrapper in ("Optional", "Union"):
+        token = f"{wrapper}["
+        while token in signature:
+            start = signature.rfind(token)
+            content_start = start + len(token)
+            depth = 1
+            end = content_start
+            while depth and end < len(signature):
+                if signature[end] == "[":
+                    depth += 1
+                elif signature[end] == "]":
+                    depth -= 1
+                end += 1
+            if depth:
+                break
+            content = signature[content_start : end - 1]
+            if wrapper == "Optional":
+                replacement = f"{content} | None"
+            else:
+                parts: list[str] = []
+                part_start = 0
+                part_depth = 0
+                for index, character in enumerate(content):
+                    if character == "[":
+                        part_depth += 1
+                    elif character == "]":
+                        part_depth -= 1
+                    elif character == "," and part_depth == 0:
+                        parts.append(content[part_start:index].strip())
+                        part_start = index + 1
+                parts.append(content[part_start:].strip())
+                parts = ["None" if part == "NoneType" else part for part in parts]
+                parts.sort(key=lambda part: (part == "None", part))
+                replacement = " | ".join(parts)
+            signature = signature[:start] + replacement + signature[end:]
+    return signature
+
+
 def collect_api(spec: SkillApiSpec) -> dict[str, object]:
     """Collect the exact generated API contract for one skill."""
     exports: dict[str, list[str]] = {}
@@ -171,8 +212,8 @@ def collect_api(spec: SkillApiSpec) -> dict[str, object]:
                 ) from exc
             if callable(exported):
                 try:
-                    signatures[f"{module_name}.{export_name}"] = str(
-                        inspect.signature(exported)
+                    signatures[f"{module_name}.{export_name}"] = _normalize_signature(
+                        str(inspect.signature(exported))
                     )
                 except (TypeError, ValueError) as exc:
                     raise ValueError(
@@ -261,10 +302,11 @@ def sync_api_sections(
     for skill_name, spec in SKILL_API_SPECS.items():
         path = skills_dir / SKILL_FILES[skill_name]
         old_bytes = path.read_bytes()
+        line_ending = b"\r\n" if b"\r\n" in old_bytes else b"\n"
         old_text = old_bytes.decode("utf-8").replace("\r\n", "\n").replace("\r", "\n")
         api = collect_api(spec)
         new_text = update_skill_text(old_text, spec, api)
-        new_bytes = new_text.encode("utf-8")
+        new_bytes = new_text.replace("\n", line_ending.decode()).encode("utf-8")
         rendered[path] = (old_bytes, new_bytes)
 
     changed = [path for path, (old, new) in rendered.items() if old != new]

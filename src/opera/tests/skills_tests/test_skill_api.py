@@ -125,6 +125,39 @@ def test_collect_api_requires_export(monkeypatch: pytest.MonkeyPatch) -> None:
         collect_api(SkillApiSpec("fake", ("fake_missing_export",)))
 
 
+# TODO: Short-term fix linked to new docstring formatting in Python 3.12.
+@pytest.mark.parametrize(
+    ("annotation", "expected"),
+    [
+        ("Optional[list[str]]", "list[str] | None"),
+        ("Union[str, list[str], NoneType]", "list[str] | str | None"),
+        (
+            "Union[int, dict[str, int], Literal['Q', 'M'], NoneType]",
+            "Literal['Q', 'M'] | dict[str, int] | int | None",
+        ),
+    ],
+)
+def test_collect_api_normalizes_typing_spellings(
+    monkeypatch: pytest.MonkeyPatch, annotation: str, expected: str
+) -> None:
+    module = types.ModuleType("fake_typing")
+    module.__all__ = ["function"]
+    module.function = lambda: None
+    monkeypatch.setattr(skill_api.importlib, "import_module", lambda _name: module)
+    monkeypatch.setattr(skill_api.importlib.metadata, "version", lambda _name: "1.0")
+    monkeypatch.setattr(
+        skill_api.inspect,
+        "signature",
+        lambda _value: f"(value: {annotation} = None) -> None",
+    )
+
+    api = collect_api(SkillApiSpec("fake", ("fake_typing",)))
+
+    assert api["signatures"] == {
+        "fake_typing.function": f"(value: {expected} = None) -> None"
+    }
+
+
 def test_update_skill_text_rejects_duplicate_markers() -> None:
     text = "---\nname: fake\n---\n" + _BEGIN + "\n" + _END + "\n" + _BEGIN
     with pytest.raises(ValueError, match="exactly one"):

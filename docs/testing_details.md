@@ -130,6 +130,12 @@ python -m pip install -e . --force-reinstall --no-deps
 
 `--no-deps` matters: it prevents the candidate's dependency declarations from silently replacing other pinned modules. A passing run therefore shows that the candidate works with the current ecosystem, not with a newly resolved set of dependencies.
 
+The shared gate reads `[project].name` from the checked-out module's
+`pyproject.toml` and excludes that candidate alone from exact version matching.
+Its installed version is expected to differ from OPERA's pin while testing an
+unreleased change. Every other ecosystem package must still match its pin, and
+the candidate still participates in API, contract, and pipeline checks.
+
 The release gate performs the same substitution with the built wheel. Testing the wheel catches packaging errors that an editable installation can hide, such as missing package data or incorrect entry points.
 
 ## DataFrame contracts

@@ -196,7 +196,7 @@ pytest
 
 ```bash
 git add .
-git commit -m "Fixes #1: Describe your changes"
+git commit -m "fix: describe your changes"
 git push origin fix/#1-prior
 ```
 
@@ -204,7 +204,9 @@ git push origin fix/#1-prior
 
 ## Creating a Release (for maintainers)
 
-Release Please watches `main` for conventional commits. It opens or updates a release pull request with the next version and changelog entries. Dependency pin pull requests use `deps: ...` commits and therefore produce patch releases. The release workflow enables auto-merge on the Release Please pull request; GitHub merges it after the required quality checks and branch protection rules pass. Keep work on `dev` until it is ready for the automatic release path through `main`.
+Release Please watches `main` for Conventional Commits. It opens or updates a release pull request with the next version and changelog entries. The commit subject must have a recognized type, such as `fix:`, `feat:`, or `deps:`; an untyped subject is ignored even when its body contains a `Release-As: ...` footer. A `Release-As: 0.4.5` footer is useful for a one-time release because it overrides the proposed version after the commit has been parsed. It does not make an otherwise untyped commit releasable.
+
+After the release, dependency pin pull requests use `deps: ...` commits and produce normal patch releases. For example, a pin update after `0.4.5` produces `0.4.6`; `feat:` produces a minor release and a breaking change produces a major release. The release workflow enables auto-merge on the Release Please pull request; GitHub merges it after the required quality checks and branch protection rules pass. Keep work on `dev` until it is ready for the automatic release path through `main`.
 
 Configure the `RELEASE_PLEASE_TOKEN` repository secret with a token that can write contents, issues, pull requests, tags, and releases. A token with those permissions is required so the Release Please pull request and release can trigger the downstream publication and documentation workflows. Enable **Allow auto-merge** in the repository settings and configure the package-quality check as required for `main`. Required human reviews must not apply to these automation pull requests unless the token's identity is allowed to bypass that rule. The workflows request auto-merge only for module pin and Release Please pull requests; all other pull requests remain manual.
 
@@ -232,7 +234,7 @@ Release Please updates `CHANGELOG.md`; do not edit generated release sections by
 
 ### Module pin pull requests
 
-Each module has an `update-ecosystem.yml` workflow that runs after its `Publish to PyPI` workflow succeeds. It reads the released version, updates only that module's exact pin in `opera-eco`, and opens or updates a pull request. The workflow enables auto-merge, and the `opera-eco` package-quality workflow validates the complete pinned set before GitHub merges the pull request.
+Each module repository must have an `update-ecosystem.yml` workflow that runs after its `Publish to PyPI` workflow succeeds. It reads the released version, updates only that module's exact pin in `opera-eco`, and opens or updates a pull request. The workflow enables auto-merge, and the `opera-eco` package-quality workflow validates the complete pinned set before GitHub merges the pull request.
 
 Configure an `OPERA_ECO_PR_TOKEN` secret in each module repository. Use a fine-grained token or GitHub App token with read/write access to `Contents` and `Pull requests` in `bank-of-england/opera-eco`. The default token from the module repository cannot push a branch or open a pull request in another repository.
 

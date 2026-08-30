@@ -2,10 +2,14 @@
 name: opera
 description: Modular forecasting ecosystem (Bank of England). OPERA = Prediction + Evaluation + Real-time Analysis. Modules compose for data → models → evaluation → combination pipelines. Full architecture + links to subskills.
 module-package: opera-eco
-module-version: "0.4.4"
+# x-release-please-start-version
+module-version: "0.4.5"
+# x-release-please-end
 ---
 
-# Version: 0.4.4
+<!-- x-release-please-start-version -->
+# Version: 0.4.5
+<!-- x-release-please-end -->
 
 # OPERA — Prediction, Evaluation & Real-time Analysis
 
@@ -345,6 +349,7 @@ rtm.forecast(
 
 ---
 
+<!-- x-release-please-start-version -->
 <!-- BEGIN GENERATED API -->
 ## API
 
@@ -357,10 +362,11 @@ rtm.forecast(
   },
   "package": "opera-eco",
   "signatures": {},
-  "version": "0.4.4"
+  "version": "0.4.5"
 }
 ```
 <!-- END GENERATED API -->
+<!-- x-release-please-end -->
 
 ## Status
 

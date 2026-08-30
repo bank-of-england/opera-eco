@@ -63,7 +63,7 @@ jobs:
       - name: Verify pinned module versions
         run: >-
           pytest
-          src/opera/tests/skills_tests/test_skill_api.py::test_installed_versions_match_manifest
+          src/opera/tests/skills_tests/test_skill_api.py::test_external_installed_versions_match_manifest
 
       - name: Check generated skill APIs
         run: |

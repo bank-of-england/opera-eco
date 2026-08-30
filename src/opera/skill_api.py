@@ -189,13 +189,15 @@ def _normalize_signature(signature: str) -> str:
                         part_start = index + 1
                 parts.append(content[part_start:].strip())
                 parts = ["None" if part == "NoneType" else part for part in parts]
-                parts.sort(key=lambda part: (part == "None", part))
+                parts = [part for part in parts if part != "None"] + [
+                    part for part in parts if part == "None"
+                ]
                 replacement = " | ".join(parts)
             signature = signature[:start] + replacement + signature[end:]
     return signature
 
 
-def collect_api(spec: SkillApiSpec) -> dict[str, object]:
+def collect_api(spec: SkillApiSpec, version: str | None = None) -> dict[str, object]:
     """Collect the exact generated API contract for one skill."""
     exports: dict[str, list[str]] = {}
     signatures: dict[str, str] = {}
@@ -223,7 +225,9 @@ def collect_api(spec: SkillApiSpec) -> dict[str, object]:
         "exports": exports,
         "package": spec.package,
         "signatures": dict(sorted(signatures.items())),
-        "version": importlib.metadata.version(spec.package),
+        "version": (
+            version if version is not None else importlib.metadata.version(spec.package)
+        ),
     }
 
 
@@ -269,6 +273,12 @@ def update_skill_text(text: str, spec: SkillApiSpec, api: Mapping[str, object]) 
             front_matter_end += 1
 
     updated = "".join(lines)
+    version_heading = re.compile(r"(?m)^# Version:\s*[^\r\n]*$")
+    heading_matches = version_heading.findall(updated)
+    if len(heading_matches) > 1:
+        raise ValueError("Skill text has duplicate version headings")
+    if heading_matches:
+        updated = version_heading.sub(f"# Version: {api['version']}", updated, count=1)
     begin_count = updated.count(_BEGIN_MARKER)
     end_count = updated.count(_END_MARKER)
     if begin_count != 1 or end_count != 1:
@@ -297,14 +307,19 @@ def sync_api_sections(
     from opera.skills_manager import SKILL_FILES
 
     expected = load_expected_versions(pyproject_path)
-    validate_installed_versions(expected)
+    external_expected = {
+        _normalize_name(spec.package): expected[_normalize_name(spec.package)]
+        for skill_name, spec in SKILL_API_SPECS.items()
+        if skill_name != "opera"
+    }
+    validate_installed_versions(external_expected)
     rendered: dict[Path, tuple[bytes, bytes]] = {}
     for skill_name, spec in SKILL_API_SPECS.items():
         path = skills_dir / SKILL_FILES[skill_name]
         old_bytes = path.read_bytes()
         line_ending = b"\r\n" if b"\r\n" in old_bytes else b"\n"
         old_text = old_bytes.decode("utf-8").replace("\r\n", "\n").replace("\r", "\n")
-        api = collect_api(spec)
+        api = collect_api(spec, expected[_normalize_name(spec.package)])
         new_text = update_skill_text(old_text, spec, api)
         new_bytes = new_text.replace("\n", line_ending.decode()).encode("utf-8")
         rendered[path] = (old_bytes, new_bytes)

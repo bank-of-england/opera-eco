@@ -65,18 +65,21 @@ notebooks = [
     "marimo==0.24.0",
 ]
 
+docs = [
+    "mkdocstrings[python]",
+    "zensical",
+]
+
 dev = [
+    "opera-eco[test]",
+    "opera-eco[notebooks]",
+    "opera-eco[docs]",
     "build",
     "packaging",
     "pre-commit",
     "pydoclint",
     "ruff",
     "twine",
-]
-
-docs = [
-    "mkdocstrings[python]",
-    "zensical",
 ]
 
 [project.scripts]

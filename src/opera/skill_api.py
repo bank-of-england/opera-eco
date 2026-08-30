@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import importlib
 import importlib.metadata
-import inspect
 import json
 import re
 import tomllib
@@ -154,77 +153,23 @@ def _validated_exports(module_name: str, module: object) -> list[str]:
     return sorted(exports)
 
 
-# TODO: Short-term fix
-def _normalize_signature(signature: str) -> str:
-    """Normalize typing spellings that vary between Python versions."""
-    for wrapper in ("Optional", "Union"):
-        token = f"{wrapper}["
-        while token in signature:
-            start = signature.rfind(token)
-            content_start = start + len(token)
-            depth = 1
-            end = content_start
-            while depth and end < len(signature):
-                if signature[end] == "[":
-                    depth += 1
-                elif signature[end] == "]":
-                    depth -= 1
-                end += 1
-            if depth:
-                break
-            content = signature[content_start : end - 1]
-            if wrapper == "Optional":
-                replacement = f"{content} | None"
-            else:
-                parts: list[str] = []
-                part_start = 0
-                part_depth = 0
-                for index, character in enumerate(content):
-                    if character == "[":
-                        part_depth += 1
-                    elif character == "]":
-                        part_depth -= 1
-                    elif character == "," and part_depth == 0:
-                        parts.append(content[part_start:index].strip())
-                        part_start = index + 1
-                parts.append(content[part_start:].strip())
-                parts = ["None" if part == "NoneType" else part for part in parts]
-                parts = [part for part in parts if part != "None"] + [
-                    part for part in parts if part == "None"
-                ]
-                replacement = " | ".join(parts)
-            signature = signature[:start] + replacement + signature[end:]
-    return signature
-
-
 def collect_api(spec: SkillApiSpec, version: str | None = None) -> dict[str, object]:
     """Collect the exact generated API contract for one skill."""
     exports: dict[str, list[str]] = {}
-    signatures: dict[str, str] = {}
     for module_name in sorted(spec.modules):
         module = importlib.import_module(module_name)
         module_exports = _validated_exports(module_name, module)
         exports[module_name] = module_exports
         for export_name in module_exports:
             try:
-                exported = getattr(module, export_name)
+                getattr(module, export_name)
             except AttributeError as exc:
                 raise ValueError(
                     f"Configured export {module_name}.{export_name} is missing"
                 ) from exc
-            if callable(exported):
-                try:
-                    signatures[f"{module_name}.{export_name}"] = _normalize_signature(
-                        str(inspect.signature(exported))
-                    )
-                except (TypeError, ValueError) as exc:
-                    raise ValueError(
-                        f"Cannot inspect callable {module_name}.{export_name}"
-                    ) from exc
     return {
         "exports": exports,
         "package": spec.package,
-        "signatures": dict(sorted(signatures.items())),
         "version": (
             version if version is not None else importlib.metadata.version(spec.package)
         ),

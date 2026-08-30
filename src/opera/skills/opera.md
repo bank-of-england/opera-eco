@@ -361,7 +361,6 @@ rtm.forecast(
     ]
   },
   "package": "opera-eco",
-  "signatures": {},
   "version": "0.4.5"
 }
 ```

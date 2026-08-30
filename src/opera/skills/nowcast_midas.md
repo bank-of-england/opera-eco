@@ -194,32 +194,6 @@ Only `'ols'` valid for almon/unrestricted; beta/exp_almon → NLS forced.
     ]
   },
   "package": "nowcast-midas",
-  "signatures": {
-    "nowcast_midas.ComboSpec": "(name: 'str', sources: 'list[str | MidasSpec | OLSSpec | MultiMidasSpec | ComboSpec]' = <factory>, method: 'str' = 'average', window: 'int | None' = None, minimum_sample_size: 'int' = 10, discount_rate: 'float' = 1.0, estimation_start: 'pd.Timestamp | None' = None, estimation_end: 'pd.Timestamp | None' = None, estimator: 'str' = 'constrained_ls', dummy_periods: 'list[pd.Timestamp] | None' = None) -> None",
-    "nowcast_midas.FittedMidas": "(alpha: 'float' = 0.0, beta: 'float' = 1.0, theta: 'np.ndarray' = <factory>, weights: 'np.ndarray' = <factory>, A: 'np.ndarray | None' = None, fitted_values: 'pd.Series' = <factory>, residuals: 'np.ndarray' = <factory>, nobs: 'int' = 0, y: 'np.ndarray' = <factory>, X: 'np.ndarray' = <factory>, dates: 'np.ndarray | None' = None) -> None",
-    "nowcast_midas.FittedMultiMidas": "(alpha: 'float' = 0.0, variable_fits: 'dict[str, VariableFit]' = <factory>, gamma: 'np.ndarray' = <factory>, phi: 'np.ndarray' = <factory>, A: 'np.ndarray | None' = None, fitted_values: 'np.ndarray' = <factory>, residuals: 'np.ndarray' = <factory>, nobs: 'int' = 0, y: 'np.ndarray' = <factory>, dates: 'np.ndarray | None' = None) -> None",
-    "nowcast_midas.FittedOLS": "(intercept: 'float', coef: 'np.ndarray', gamma: 'np.ndarray', phi: 'np.ndarray', fitted_values: 'pd.Series', residuals: 'np.ndarray', nobs: 'int', dates: 'np.ndarray | None' = None) -> None",
-    "nowcast_midas.MIDAS": "(method: 'str' = 'almon', n_lags: 'int' = 6, n_pars_weights: 'int' = 2, estimator: 'str | None' = None, horizons: 'list[int] | None' = None, start_lag: 'int' = 0, n_ar_lags: 'int' = 0, dummy_periods: 'list[pd.Timestamp] | None' = None) -> 'None'",
-    "nowcast_midas.MidasCombo": "(combo_specs: 'ComboSpec | None' = None, horizons: 'int' = 3) -> 'None'",
-    "nowcast_midas.MidasSpec": "(variable: 'str', method: 'str' = 'almon', n_lags: 'int' = 3, n_pars_weights: 'int' = 2, estimator: 'str | None' = None, start_lag: 'int' = 0, n_ar_lags: 'int' = 0, dummy_periods: 'list[pd.Timestamp] | None' = None, minimum_sample_size: 'int | None' = None) -> None",
-    "nowcast_midas.MultiMIDAS": "(variables: 'list[str | VariableSpec]', method: 'str' = 'almon', n_lags: 'int' = 3, n_pars_weights: 'int' = 2, estimator: 'str | None' = None, horizons: 'list[int] | None' = None, start_lag: 'int' = 0, n_ar_lags: 'int' = 0, dummy_periods: 'list[pd.Timestamp] | None' = None) -> 'None'",
-    "nowcast_midas.MultiMidasSpec": "(name: 'str', variables: 'list[str | VariableSpec]' = <factory>, method: 'str' = 'almon', n_lags: 'int' = 3, n_pars_weights: 'int' = 2, estimator: 'str | None' = None, start_lag: 'int' = 0, n_ar_lags: 'int' = 0, dummy_periods: 'list[pd.Timestamp] | None' = None, minimum_sample_size: 'int | None' = None) -> None",
-    "nowcast_midas.OLS": "(n_lags: 'int' = 1, start_lag: 'int' = 0, horizons: 'list[int] | None' = None, n_ar_lags: 'int' = 0, dummy_periods: 'list[pd.Timestamp] | None' = None) -> 'None'",
-    "nowcast_midas.OLSSpec": "(variable: 'str', n_lags: 'int' = 1, start_lag: 'int' = 0, n_ar_lags: 'int' = 0, dummy_periods: 'list[pd.Timestamp] | None' = None, minimum_sample_size: 'int | None' = None) -> None",
-    "nowcast_midas.VariableFit": "(beta: 'float' = 1.0, theta: 'np.ndarray' = <factory>, weights: 'np.ndarray' = <factory>) -> None",
-    "nowcast_midas.VariableSpec": "(variable: 'str', method: 'str' = 'almon', n_lags: 'int' = 3, n_pars_weights: 'int' = 2, estimator: 'str | None' = None, start_lag: 'int' = 0, frequency: 'str' = 'ME') -> None",
-    "nowcast_midas.combo_weights.clipped_ols": "(X: 'np.ndarray', y: 'np.ndarray') -> 'np.ndarray'",
-    "nowcast_midas.combo_weights.constrained_least_squares": "(X: 'np.ndarray', y: 'np.ndarray') -> 'np.ndarray'",
-    "nowcast_midas.combo_weights.fit_average": "(source_fitted: 'pd.DataFrame') -> 'tuple[np.ndarray, dict[str, np.ndarray]]'",
-    "nowcast_midas.combo_weights.fit_weights": "(target: 'pd.Series', source_fitted: 'pd.DataFrame', *, method: 'str', window: 'int | None' = None, discount_rate: 'float | None' = None, dummy_periods: 'list | None' = None, minimum_sample_size: 'int | None' = None) -> 'tuple[np.ndarray, dict[str, np.ndarray]]'",
-    "nowcast_midas.temporal_weights.almon": "(theta: jax.Array, n_lags: int) -> jax.Array",
-    "nowcast_midas.temporal_weights.beta": "(theta: jax.Array, n_lags: int) -> jax.Array",
-    "nowcast_midas.temporal_weights.exp_almon": "(theta: jax.Array, n_lags: int) -> jax.Array",
-    "nowcast_midas.temporal_weights.get_weights": "(method: str, theta: jax.Array, n_lags: int) -> jax.Array",
-    "nowcast_midas.temporal_weights.unrestricted": "(theta: jax.Array, n_lags: int) -> jax.Array",
-    "nowcast_midas.utils.sample_combo_data": "(n_quarters: 'int' = 60, n_lags: 'int' = 6, monthly_vars: 'list[str] | None' = None, quarterly_vars: 'list[str] | None' = None, alpha: 'float' = 1.0, betas: 'dict[str, float] | None' = None, gammas: 'dict[str, float] | None' = None, noise: 'float' = 0.5, seed: 'int' = 42, method: 'str' = 'exp_almon', theta_true: 'list[float] | np.ndarray | None' = None, horizon: 'int' = 0, outlier_date: 'str | pd.Timestamp | None' = '2020-06-30', outlier_size: 'float' = -25.0) -> 'tuple[pd.DataFrame, pd.DataFrame, dict]'",
-    "nowcast_midas.utils.sample_data": "(n_obs: 'int' = 100, n_lags: 'int' = 6, alpha: 'float' = 2.0, beta_: 'float' = 1.0, noise: 'float' = 0.5, seed: 'int' = 42, horizon: 'int' = 0, method: 'str' = 'exp_almon', theta_true: 'list[float] | np.ndarray | None' = None, n_ar_lags: 'int' = 0, phi_true: 'list[float] | np.ndarray | None' = None) -> 'tuple[pd.DataFrame, pd.DataFrame]'"
-  },
   "version": "0.0.1"
 }
 ```

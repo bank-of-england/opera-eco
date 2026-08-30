@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "opera-eco"
-version = "0.4.7"
+version = "0.4.8"
 description = "Dependency and skill manager for the OPERA ecosystem"
 readme = "README.md"
 requires-python = ">=3.11"

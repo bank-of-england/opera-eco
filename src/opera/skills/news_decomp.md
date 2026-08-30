@@ -176,9 +176,6 @@ Use the exact local package APIs above. Legacy styling and vintage-signal helper
     ]
   },
   "package": "news_decomp",
-  "signatures": {
-    "news_decomp.NewsData": "(df: pandas.DataFrame)"
-  },
   "version": "0.0.7"
 }
 ```

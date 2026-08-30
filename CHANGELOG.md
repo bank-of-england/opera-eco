@@ -1,7 +1,5 @@
 # Changelog
 
-All notable changes to `opera-eco` are documented here.
-
 ## [0.4.6](https://github.com/bank-of-england/opera-eco/compare/opera-eco-v0.4.5...opera-eco-v0.4.6) (2026-08-30)
 
 

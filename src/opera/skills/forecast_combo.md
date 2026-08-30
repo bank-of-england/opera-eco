@@ -258,26 +258,6 @@ combo.fit(
     ]
   },
   "package": "forecast_combo",
-  "signatures": {
-    "forecast_combo.ComboSpec": "(name: str, sources: list, method: str = 'average', training_start: str | None = None, training_end: str | None = None, metric: str = 'pop', k: int = 0, period_filter: list | None = None, window_size: int | None = None, discount_param: float = 1.0, allow_partial_sources: bool = True, print_warning: bool = True) -> None",
-    "forecast_combo.ForecastCombo": "(forecast_data: Any) -> None",
-    "forecast_combo.bar_plot_by_horizon": "(weights_df: pandas.DataFrame, y_axis: str = 'model', model: str | list[str] | None = None, method: str | list[str] | None = None, variable: str | list[str] | None = None, combo_label: str | list[str] | None = None) -> tuple[matplotlib.figure.Figure, numpy.ndarray]",
-    "forecast_combo.bar_plot_by_vintage": "(weights_df: pandas.DataFrame, y_axis: str = 'model', model: str | list[str] | None = None, method: str | list[str] | None = None, variable: str | list[str] | None = None, horizon: int | str | list[int | str] | None = None, combo_label: str | list[str] | None = None) -> tuple[matplotlib.figure.Figure, numpy.ndarray]",
-    "forecast_combo.combinations.average": "(X: numpy.ndarray) -> numpy.ndarray",
-    "forecast_combo.combinations.constrained_least_squares": "(X: numpy.ndarray, y: numpy.ndarray, window_size: int | None = None) -> numpy.ndarray",
-    "forecast_combo.combinations.huber_weights": "(X: numpy.ndarray, y: numpy.ndarray, window_size: int | None) -> numpy.ndarray",
-    "forecast_combo.combinations.least_squares": "(X: numpy.ndarray, y: numpy.ndarray, window_size: int | None = None) -> tuple[numpy.ndarray, numpy.ndarray]",
-    "forecast_combo.combinations.mae_weights": "(X: numpy.ndarray, y: numpy.ndarray, window_size: int | None, discount_param: float = 1.0) -> tuple[numpy.ndarray, numpy.ndarray]",
-    "forecast_combo.combinations.mse_weights": "(X: numpy.ndarray, y: numpy.ndarray, window_size: int | None, discount_param: float = 1.0) -> tuple[numpy.ndarray, numpy.ndarray]",
-    "forecast_combo.combinations.rmse_weights": "(X: numpy.ndarray, y: numpy.ndarray, window_size: int | None, discount_param: float = 1.0) -> tuple[numpy.ndarray, numpy.ndarray]",
-    "forecast_combo.create_period_filter": "(start_period: str | pandas.Period | pandas.Timestamp, end_period: str | pandas.Period | pandas.Timestamp, freq: str) -> list[pandas.Period]",
-    "forecast_combo.get_weights": "(X: numpy.ndarray, y: numpy.ndarray, method: str, window_size: int | None = None, discount_param: float = 1.0) -> tuple[numpy.ndarray, numpy.ndarray]",
-    "forecast_combo.heatmap_by_horizon": "(weights_df: pandas.DataFrame, y_axis: str = 'model', model: str | list[str] | None = None, method: str | list[str] | None = None, variable: str | list[str] | None = None, combo_label: str | list[str] | None = None) -> tuple[matplotlib.figure.Figure, numpy.ndarray]",
-    "forecast_combo.heatmap_by_vintage": "(weights_df: pandas.DataFrame, y_axis: str = 'model', model: str | list[str] | None = None, method: str | list[str] | None = None, variable: str | list[str] | None = None, horizon: int | str | list[int | str] | None = None, combo_label: str | list[str] | None = None) -> tuple[matplotlib.figure.Figure, numpy.ndarray]",
-    "forecast_combo.line_plot_by_horizon": "(weights_df: pandas.DataFrame, y_axis: str = 'model', model: str | list[str] | None = None, method: str | list[str] | None = None, variable: str | list[str] | None = None, combo_label: str | list[str] | None = None) -> tuple[matplotlib.figure.Figure, numpy.ndarray]",
-    "forecast_combo.line_plot_by_vintage": "(weights_df: pandas.DataFrame, y_axis: str = 'model', model: str | list[str] | None = None, method: str | list[str] | None = None, variable: str | list[str] | None = None, horizon: int | str | list[int | str] | None = None, combo_label: str | list[str] | None = None) -> tuple[matplotlib.figure.Figure, numpy.ndarray]",
-    "forecast_combo.validate_spec_graph": "(roots: 'list[ComboSpec]', raw_sources: 'set[str] | None' = None) -> list['ComboSpec']"
-  },
   "version": "0.1.1"
 }
 ```

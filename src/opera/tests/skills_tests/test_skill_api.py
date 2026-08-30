@@ -103,9 +103,8 @@ def test_opera_skill_marks_release_please_version_fields() -> None:
 def test_generated_api_is_valid_json() -> None:
     for filename in SKILL_FILES.values():
         api = _generated_api(_resource_text(filename))
-        assert set(api) == {"exports", "package", "signatures", "version"}
+        assert set(api) == {"exports", "package", "version"}
         assert isinstance(api["exports"], dict)
-        assert isinstance(api["signatures"], dict)
 
 
 def test_generated_api_matches_installed_packages() -> None:
@@ -174,59 +173,10 @@ def test_collect_api_requires_export(monkeypatch: pytest.MonkeyPatch) -> None:
         collect_api(SkillApiSpec("fake", ("fake_missing_export",)))
 
 
-# TODO: Short-term fix linked to new docstring formatting in Python 3.12.
-@pytest.mark.parametrize(
-    ("annotation", "expected"),
-    [
-        ("Optional[list[str]]", "list[str] | None"),
-        ("Union[str, list[str], NoneType]", "str | list[str] | None"),
-        (
-            "Union[int, dict[str, int], Literal['Q', 'M'], NoneType]",
-            "int | dict[str, int] | Literal['Q', 'M'] | None",
-        ),
-    ],
-)
-def test_collect_api_normalizes_typing_spellings(
-    monkeypatch: pytest.MonkeyPatch, annotation: str, expected: str
-) -> None:
-    module = types.ModuleType("fake_typing")
-    module.__all__ = ["function"]
-    module.function = lambda: None
-    monkeypatch.setattr(skill_api.importlib, "import_module", lambda _name: module)
-    monkeypatch.setattr(skill_api.importlib.metadata, "version", lambda _name: "1.0")
-    monkeypatch.setattr(
-        skill_api.inspect,
-        "signature",
-        lambda _value: f"(value: {annotation} = None) -> None",
-    )
-
-    api = collect_api(SkillApiSpec("fake", ("fake_typing",)))
-
-    assert api["signatures"] == {
-        "fake_typing.function": f"(value: {expected} = None) -> None"
-    }
-
-
 def test_update_skill_text_rejects_duplicate_markers() -> None:
     text = "---\nname: fake\n---\n" + _BEGIN + "\n" + _END + "\n" + _BEGIN
     with pytest.raises(ValueError, match="exactly one"):
         update_skill_text(text, SkillApiSpec("fake", ("fake",)), {"version": "1"})
-
-
-def test_collect_api_rejects_uninspectable_callable(
-    monkeypatch: pytest.MonkeyPatch,
-) -> None:
-    module = types.ModuleType("fake_uninspectable")
-    module.__all__ = ["function"]
-    module.function = lambda: None
-    monkeypatch.setattr(skill_api.importlib, "import_module", lambda _name: module)
-    monkeypatch.setattr(
-        skill_api.inspect,
-        "signature",
-        lambda _value: (_ for _ in ()).throw(TypeError()),
-    )
-    with pytest.raises(ValueError, match="Cannot inspect"):
-        collect_api(SkillApiSpec("fake", ("fake_uninspectable",)))
 
 
 def test_validate_installed_versions_reports_mismatch(

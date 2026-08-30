@@ -220,31 +220,6 @@ cumulative_change(data, levels)
     ]
   },
   "package": "bvar",
-  "signatures": {
-    "bvar.BVAR": "(n_lags: 'int', model: 'SamplingModel', stationary: 'bool', optimisation_method: 'str' = 'ml', random_state: 'int | None' = None) -> 'None'",
-    "bvar.GIRF": "()",
-    "bvar.IndependentNIW": "(c2: 'float' = 0.5, minnesota: 'bool' = True, soc: 'bool' = True, sur: 'bool' = True, covid: 'bool' = False, covid_dates: 'list | None' = None) -> 'None'",
-    "bvar.NaturalConjugate": "(minnesota: 'bool' = True, soc: 'bool' = True, sur: 'bool' = True, covid: 'bool' = False, covid_dates: 'list | None' = None) -> 'None'",
-    "bvar.compare_forecasts": "(df_forecast_a: 'pd.DataFrame', df_forecast_b: 'pd.DataFrame', H: 'int', labels: 'list[str] | None' = None, n_outturns: 'int' = 0) -> 'pd.DataFrame'",
-    "bvar.cumulative_change": "(data: numpy.ndarray, levels: numpy.ndarray) -> numpy.ndarray",
-    "bvar.forecast.Forecasting": "()",
-    "bvar.forecast.compare_forecasts": "(df_forecast_a: 'pd.DataFrame', df_forecast_b: 'pd.DataFrame', H: 'int', labels: 'list[str] | None' = None, n_outturns: 'int' = 0) -> 'pd.DataFrame'",
-    "bvar.mcmc_posterior": "(draws: numpy.ndarray, true_pars: numpy.ndarray | None = None, max_cols: int = 3, figsize_per_plot: tuple = (5, 3)) -> None",
-    "bvar.models.IndependentNIW": "(c2: 'float' = 0.5, minnesota: 'bool' = True, soc: 'bool' = True, sur: 'bool' = True, covid: 'bool' = False, covid_dates: 'list | None' = None) -> 'None'",
-    "bvar.models.NaturalConjugate": "(minnesota: 'bool' = True, soc: 'bool' = True, sur: 'bool' = True, covid: 'bool' = False, covid_dates: 'list | None' = None) -> 'None'",
-    "bvar.models.PosteriorState": "(beta: 'np.ndarray', sigma: 'np.ndarray', extras: 'Any | None' = None) -> None",
-    "bvar.models.SamplingModel": "(minnesota: 'bool' = True, soc: 'bool' = True, sur: 'bool' = True, covid: 'bool' = False, covid_dates: 'list | None' = None) -> 'None'",
-    "bvar.models.SamplingResult": "(beta_draws: 'np.ndarray', sigma_draws: 'np.ndarray', beta_point: 'np.ndarray', sigma_point: 'np.ndarray', extras_point: 'Any | None' = None, extras_draws: 'list | None' = None) -> None",
-    "bvar.plot_delta_forecast": "(df: pandas.DataFrame, var_names: str | list[str] | None = None, title: str = 'Forecast revision', figsize_per_plot: tuple = (5, 3.5), show: str = 'difference', n_rows: int = 1, metric_labels: dict | None = None, extra_data: pandas.DataFrame | None = None) -> None",
-    "bvar.plot_density": "(data: numpy.ndarray, labels: list[str] | None = None, title: str | None = None, figsize: tuple = (10, 6), bw: float | str | None = None, ax: matplotlib.axes._axes.Axes | None = None) -> tuple[matplotlib.figure.Figure, matplotlib.axes._axes.Axes]",
-    "bvar.plot_histogram": "(data: numpy.ndarray, labels: list[str] | None = None, title: str | None = None, figsize: tuple = (10, 6), bins: int = 30, alpha: float = 0.5, colors: list | None = None, ax: matplotlib.axes._axes.Axes | None = None) -> tuple[matplotlib.figure.Figure, matplotlib.axes._axes.Axes]",
-    "bvar.plots.PlotBVAR": "()",
-    "bvar.plots.PlotGIRF": "()",
-    "bvar.plots.plot_delta_forecast": "(df: pandas.DataFrame, var_names: str | list[str] | None = None, title: str = 'Forecast revision', figsize_per_plot: tuple = (5, 3.5), show: str = 'difference', n_rows: int = 1, metric_labels: dict | None = None, extra_data: pandas.DataFrame | None = None) -> None",
-    "bvar.plots.plot_density": "(data: numpy.ndarray, labels: list[str] | None = None, title: str | None = None, figsize: tuple = (10, 6), bw: float | str | None = None, ax: matplotlib.axes._axes.Axes | None = None) -> tuple[matplotlib.figure.Figure, matplotlib.axes._axes.Axes]",
-    "bvar.plots.plot_histogram": "(data: numpy.ndarray, labels: list[str] | None = None, title: str | None = None, figsize: tuple = (10, 6), bins: int = 30, alpha: float = 0.5, colors: list | None = None, ax: matplotlib.axes._axes.Axes | None = None) -> tuple[matplotlib.figure.Figure, matplotlib.axes._axes.Axes]",
-    "bvar.simulate_var": "(T: int, n: int, n_lags: int, covid: bool = False, levels: bool = False, ar_mat: numpy.ndarray | None = None, constant: numpy.ndarray | None = None, Sigma: numpy.ndarray | None = None, seed: int | numpy.random._generator.Generator | None = None) -> Tuple[pandas.DataFrame, numpy.ndarray, numpy.ndarray, numpy.ndarray]"
-  },
   "version": "0.3.1"
 }
 ```

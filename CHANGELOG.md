@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.7](https://github.com/bank-of-england/opera-eco/compare/opera-eco-v0.4.6...opera-eco-v0.4.7) (2026-08-30)
+
+
+### Bug Fixes
+
+* simplified API testing and workflow; Release-As: 0.4.7 ([4c38060](https://github.com/bank-of-england/opera-eco/commit/4c38060a06716b7432b25a129f492e958a915911))
+
 ## [0.4.6](https://github.com/bank-of-england/opera-eco/compare/opera-eco-v0.4.5...opera-eco-v0.4.6) (2026-08-30)
 
 

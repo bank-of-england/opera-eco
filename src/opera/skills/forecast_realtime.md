@@ -2,7 +2,7 @@
 name: forecast-realtime
 description: Use when working with the `forecast_realtime` Python package.
 module-package: forecast_realtime
-module-version: "0.5.3"
+module-version: "0.5.4"
 ---
 
 # forecast_realtime
@@ -414,7 +414,7 @@ The public result is `runner.data`; model-local results are `ForecastResult.fore
     "forecast_realtime.models.RandomForest": "(n_estimators: int = 100, max_depth: int | None = None, min_samples_leaf: int = 1, max_features: str | int | float | None = 1.0, random_state: int = 42, standardise: bool = False, forecast_strategy: str = 'recursive', steps: int | None = None, label: str | None = None, formula: str | None = None, data_transformation: dict[str, str] | None = None)",
     "forecast_realtime.models.XGBoost": "(n_estimators: int = 100, max_depth: int = 6, learning_rate: float = 0.1, subsample: float = 1.0, colsample_bytree: float = 1.0, random_state: int = 42, standardise: bool = False, forecast_strategy: str = 'recursive', steps: int | None = None, label: str | None = None, formula: str | None = None, data_transformation: dict[str, str] | None = None)"
   },
-  "version": "0.5.3"
+  "version": "0.5.4"
 }
 ```
 <!-- END GENERATED API -->

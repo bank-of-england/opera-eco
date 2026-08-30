@@ -45,7 +45,7 @@ Issues = "https://github.com/bank-of-england/opera-eco/issues"
 [project.optional-dependencies]
 modules = [
     "forecast_evaluation == 0.1.13",
-    "forecast_realtime[models]==0.5.3",
+    "forecast_realtime[models]==0.5.4",
     "forecast_combo==0.1.1",
     "bvar==0.3.1",
     "nowcast-midas==0.0.1",

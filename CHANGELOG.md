@@ -2,6 +2,13 @@
 
 All notable changes to `opera-eco` are documented here.
 
+## [0.4.6](https://github.com/bank-of-england/opera-eco/compare/opera-eco-v0.4.5...opera-eco-v0.4.6) (2026-08-30)
+
+
+### Bug Fixes
+
+* release-please, workflow and api-update; Release-As: 0.4.6 ([492aa65](https://github.com/bank-of-england/opera-eco/commit/492aa651b7a110f8b20472ea88f4791233f48092))
+
 ## [0.4.5](https://github.com/bank-of-england/opera-eco/compare/opera-eco-v0.4.4...opera-eco-v0.4.5) (2026-08-30)
 
 

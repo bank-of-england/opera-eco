@@ -89,6 +89,13 @@ pytest --pyargs opera.tests -m contract
 pytest --pyargs opera.tests -m pipeline
 ```
 
+The source checkout reads the integration manifest from its own
+`pyproject.toml`. Packaged tests instead read the same exact pins from the
+installed `opera-eco` distribution metadata. They never inspect the module
+repository's `pyproject.toml`, which describes a different project. The
+packaged `conftest.py` also registers OPERA's markers so module repositories do
+not need to duplicate the marker configuration.
+
 ## Add Shared Lanes to a Module Workflow
 
 To check a module against the pinned ecosystem, add the shared lanes to its existing `package-quality.yml`. The workflow first installs the pinned set, then replaces only the package under test:

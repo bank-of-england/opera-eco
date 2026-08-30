@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.8](https://github.com/bank-of-england/opera-eco/compare/opera-eco-v0.4.7...opera-eco-v0.4.8) (2026-08-30)
+
+
+### Bug Fixes
+
+* shared tests in downstream module CI; Release-As: 0.4.8 ([1f5ba5b](https://github.com/bank-of-england/opera-eco/commit/1f5ba5be247eac661def989caf4e22e737bde8da))
+
 ## [0.4.7](https://github.com/bank-of-england/opera-eco/compare/opera-eco-v0.4.6...opera-eco-v0.4.7) (2026-08-30)
 
 

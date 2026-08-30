@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.9](https://github.com/bank-of-england/opera-eco/compare/opera-eco-v0.4.8...opera-eco-v0.4.9) (2026-08-30)
+
+
+### Bug Fixes
+
+* exempt candidate package from ecosystem pin check ([bc35d9f](https://github.com/bank-of-england/opera-eco/commit/bc35d9fc71187f848748faa44aa9e7281d26625d))
+
 ## [0.4.8](https://github.com/bank-of-england/opera-eco/compare/opera-eco-v0.4.7...opera-eco-v0.4.8) (2026-08-30)
 
 

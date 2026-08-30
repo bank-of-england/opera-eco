@@ -13,7 +13,7 @@ from opera.skill_api import (
     SKILL_API_SPECS,
     SkillApiSpec,
     collect_api,
-    load_expected_versions,
+    load_installed_expected_versions,
     sync_api_sections,
     update_skill_text,
     validate_installed_versions,
@@ -56,7 +56,7 @@ def test_api_manifest_matches_skill_manifest() -> None:
 
 
 def test_module_requirements_are_exact_pins() -> None:
-    expected = load_expected_versions(Path("pyproject.toml"))
+    expected = load_installed_expected_versions()
     assert set(expected) == {
         "opera-eco",
         "bvar",
@@ -68,8 +68,42 @@ def test_module_requirements_are_exact_pins() -> None:
     }
 
 
+def test_installed_manifest_ignores_other_extras(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    distribution = types.SimpleNamespace(
+        metadata={"Name": "opera-eco"},
+        version="1.2.3",
+        requires=[
+            "numpy",
+            'bvar==1; extra == "modules"',
+            'forecast_combo==2; extra == "modules"',
+            'forecast_evaluation==3; extra == "modules"',
+            'forecast_realtime[models]==4; extra == "modules"',
+            'news_decomp==5; extra == "modules"',
+            'nowcast-midas==6; extra == "modules"',
+            'pytest; extra == "test"',
+        ],
+    )
+    monkeypatch.setattr(
+        skill_api.importlib.metadata,
+        "distribution",
+        lambda _name: distribution,
+    )
+
+    assert load_installed_expected_versions() == {
+        "opera-eco": "1.2.3",
+        "bvar": "1",
+        "forecast-combo": "2",
+        "forecast-evaluation": "3",
+        "forecast-realtime": "4",
+        "news-decomp": "5",
+        "nowcast-midas": "6",
+    }
+
+
 def test_external_installed_versions_match_manifest() -> None:
-    expected = load_expected_versions(Path("pyproject.toml"))
+    expected = load_installed_expected_versions()
     validate_installed_versions(
         {
             package: version
@@ -80,7 +114,7 @@ def test_external_installed_versions_match_manifest() -> None:
 
 
 def test_skill_frontmatter_declares_package_and_version() -> None:
-    expected = load_expected_versions(Path("pyproject.toml"))
+    expected = load_installed_expected_versions()
     for skill_name, filename in SKILL_FILES.items():
         fields = _front_matter(_resource_text(filename))
         spec = SKILL_API_SPECS[skill_name]
@@ -89,7 +123,7 @@ def test_skill_frontmatter_declares_package_and_version() -> None:
 
 
 def test_skill_version_heading_matches_manifest() -> None:
-    expected = load_expected_versions(Path("pyproject.toml"))
+    expected = load_installed_expected_versions()
     text = _resource_text(SKILL_FILES["opera"])
     assert f"# Version: {expected['opera-eco']}" in text
 
@@ -108,7 +142,7 @@ def test_generated_api_is_valid_json() -> None:
 
 
 def test_generated_api_matches_installed_packages() -> None:
-    expected = load_expected_versions(Path("pyproject.toml"))
+    expected = load_installed_expected_versions()
     for skill_name, spec in SKILL_API_SPECS.items():
         assert _generated_api(_resource_text(SKILL_FILES[skill_name])) == collect_api(
             spec, expected[spec.package.replace("_", "-")]
@@ -121,9 +155,9 @@ def test_sync_api_is_idempotent(tmp_path: Path) -> None:
     for filename in SKILL_FILES.values():
         source = resources.files(SKILL_PACKAGE).joinpath(filename)
         (skills_dir / filename).write_bytes(source.read_bytes())
-    first = sync_api_sections(skills_dir, Path("pyproject.toml"))
+    first = sync_api_sections(skills_dir, None)
     after_first = {path: path.read_bytes() for path in skills_dir.iterdir()}
-    second = sync_api_sections(skills_dir, Path("pyproject.toml"))
+    second = sync_api_sections(skills_dir, None)
     assert first == []
     assert second == []
     assert after_first == {path: path.read_bytes() for path in skills_dir.iterdir()}
@@ -137,25 +171,14 @@ def test_update_skill_text_updates_version_heading() -> None:
     assert "# Version: 0.2.0" in updated
 
 
-def test_sync_api_uses_manifest_version_for_project(
-    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
-) -> None:
+def test_sync_api_uses_manifest_version_for_project(tmp_path: Path) -> None:
     skills_dir = tmp_path / "skills"
     skills_dir.mkdir()
     for filename in SKILL_FILES.values():
         source = resources.files(SKILL_PACKAGE).joinpath(filename)
         (skills_dir / filename).write_bytes(source.read_bytes())
 
-    original_version = skill_api.importlib.metadata.version
-
-    def version(package: str) -> str:
-        if package == "opera-eco":
-            raise AssertionError("sync must use the project manifest version")
-        return original_version(package)
-
-    monkeypatch.setattr(skill_api.importlib.metadata, "version", version)
-
-    assert sync_api_sections(skills_dir, Path("pyproject.toml")) == []
+    assert sync_api_sections(skills_dir, None) == []
 
 
 def test_collect_api_requires_all(monkeypatch: pytest.MonkeyPatch) -> None:

@@ -11,6 +11,8 @@ from collections.abc import Mapping
 from dataclasses import dataclass
 from pathlib import Path
 
+from packaging.requirements import Requirement
+
 
 @dataclass(frozen=True)
 class SkillApiSpec:
@@ -65,6 +67,27 @@ def _normalize_name(name: str) -> str:
     return re.sub(r"[-_.]+", "-", name).lower()
 
 
+def _validate_module_versions(parsed: dict[str, str]) -> None:
+    expected_external = {
+        _normalize_name(spec.package)
+        for skill_name, spec in SKILL_API_SPECS.items()
+        if skill_name != "opera"
+    }
+    if set(parsed) != expected_external:
+        missing = sorted(expected_external - set(parsed))
+        unexpected = sorted(set(parsed) - expected_external)
+        detail = []
+        if missing:
+            detail.append(f"missing: {', '.join(missing)}")
+        if unexpected:
+            detail.append(f"unexpected: {', '.join(unexpected)}")
+        raise ValueError(
+            "Module requirements do not match the API manifest ("
+            + "; ".join(detail)
+            + ")"
+        )
+
+
 def load_expected_versions(pyproject_path: Path) -> dict[str, str]:
     """Load the project and exact module versions from ``pyproject.toml``."""
     try:
@@ -94,28 +117,47 @@ def load_expected_versions(pyproject_path: Path) -> dict[str, str]:
             raise ValueError(f"Duplicate module requirement: {requirement!r}")
         parsed[normalized] = match.group("version")
 
-    expected_external = {
-        _normalize_name(spec.package)
-        for skill_name, spec in SKILL_API_SPECS.items()
-        if skill_name != "opera"
-    }
-    if set(parsed) != expected_external:
-        missing = sorted(expected_external - set(parsed))
-        unexpected = sorted(set(parsed) - expected_external)
-        detail = []
-        if missing:
-            detail.append(f"missing: {', '.join(missing)}")
-        if unexpected:
-            detail.append(f"unexpected: {', '.join(unexpected)}")
-        raise ValueError(
-            "Module requirements do not match the API manifest ("
-            + "; ".join(detail)
-            + ")"
-        )
+    _validate_module_versions(parsed)
 
     result = {_normalize_name(project_name): project_version}
     result.update(parsed)
     return result
+
+
+def load_installed_expected_versions(
+    distribution_name: str = "opera-eco",
+) -> dict[str, str]:
+    """Load exact module versions from an installed OPERA distribution."""
+    distribution = importlib.metadata.distribution(distribution_name)
+    parsed: dict[str, str] = {}
+    marker_environment = {"extra": "modules"}
+    outside_extra_environment = {"extra": "__not_an_extra__"}
+    for raw_requirement in distribution.requires or []:
+        requirement = Requirement(raw_requirement)
+        marker = requirement.marker
+        if (
+            marker is None
+            or not marker.evaluate(marker_environment)
+            or marker.evaluate(outside_extra_environment)
+        ):
+            continue
+        specifiers = list(requirement.specifier)
+        if (
+            len(specifiers) != 1
+            or specifiers[0].operator != "=="
+            or specifiers[0].version.endswith(".*")
+        ):
+            raise ValueError(f"Invalid exact module requirement: {raw_requirement!r}")
+        normalized = _normalize_name(requirement.name)
+        if normalized in parsed:
+            raise ValueError(f"Duplicate module requirement: {raw_requirement!r}")
+        parsed[normalized] = specifiers[0].version
+
+    _validate_module_versions(parsed)
+    return {
+        _normalize_name(distribution.metadata["Name"]): distribution.version,
+        **parsed,
+    }
 
 
 def validate_installed_versions(expected: Mapping[str, str]) -> None:
@@ -240,10 +282,12 @@ def update_skill_text(text: str, spec: SkillApiSpec, api: Mapping[str, object]) 
 
 def sync_api_sections(
     skills_dir: Path = Path("src/opera/skills"),
-    pyproject_path: Path = Path("pyproject.toml"),
+    pyproject_path: Path | None = Path("pyproject.toml"),
 ) -> list[Path]:
     """Synchronize every skill, writing only after all files render."""
-    if not skills_dir.is_dir() or not pyproject_path.is_file():
+    if not skills_dir.is_dir() or (
+        pyproject_path is not None and not pyproject_path.is_file()
+    ):
         raise FileNotFoundError(
             "Skill API synchronization requires src/opera/skills and pyproject.toml; "
             "run it from the repository root."
@@ -251,7 +295,11 @@ def sync_api_sections(
 
     from opera.skills_manager import SKILL_FILES
 
-    expected = load_expected_versions(pyproject_path)
+    expected = (
+        load_expected_versions(pyproject_path)
+        if pyproject_path is not None
+        else load_installed_expected_versions()
+    )
     external_expected = {
         _normalize_name(spec.package): expected[_normalize_name(spec.package)]
         for skill_name, spec in SKILL_API_SPECS.items()

@@ -32,6 +32,7 @@ classifiers = [
 
 dependencies = [
     "numpy",
+    "packaging",
     "pandas",
 ]
 
@@ -75,7 +76,6 @@ dev = [
     "opera-eco[notebooks]",
     "opera-eco[docs]",
     "build",
-    "packaging",
     "pre-commit",
     "pydoclint",
     "ruff",

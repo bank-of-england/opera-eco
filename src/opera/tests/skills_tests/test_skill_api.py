@@ -14,6 +14,7 @@ from opera.skill_api import (
     SkillApiSpec,
     collect_api,
     load_installed_expected_versions,
+    load_project_name,
     sync_api_sections,
     update_skill_text,
     validate_installed_versions,
@@ -102,14 +103,26 @@ def test_installed_manifest_ignores_other_extras(
     }
 
 
+def test_load_project_name_identifies_candidate(tmp_path: Path) -> None:
+    pyproject_path = tmp_path / "pyproject.toml"
+    pyproject_path.write_text(
+        '[project]\nname = "forecast_realtime"\nversion = "0.5.5"\n',
+        encoding="utf-8",
+    )
+
+    assert load_project_name(pyproject_path) == "forecast-realtime"
+
+
 def test_external_installed_versions_match_manifest() -> None:
     expected = load_installed_expected_versions()
+    candidate_package = load_project_name()
     validate_installed_versions(
         {
             package: version
             for package, version in expected.items()
             if package != "opera-eco"
-        }
+        },
+        {candidate_package} if candidate_package is not None else None,
     )
 
 
@@ -208,6 +221,14 @@ def test_validate_installed_versions_reports_mismatch(
     monkeypatch.setattr(skill_api.importlib.metadata, "version", lambda _name: "2.0")
     with pytest.raises(RuntimeError, match="expected 1.0, installed 2.0"):
         validate_installed_versions({"fake": "1.0"})
+
+
+def test_validate_installed_versions_ignores_candidate(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr(skill_api.importlib.metadata, "version", lambda _name: "2.0")
+
+    validate_installed_versions({"forecast-realtime": "1.0"}, {"forecast_realtime"})
 
 
 def test_cli_preserves_skill_commands_and_adds_sync_api() -> None:

@@ -124,6 +124,20 @@ def load_expected_versions(pyproject_path: Path) -> dict[str, str]:
     return result
 
 
+def load_project_name(pyproject_path: Path = Path("pyproject.toml")) -> str | None:
+    """Return the normalized name of the project in the current checkout."""
+    if not pyproject_path.is_file():
+        return None
+    try:
+        data = tomllib.loads(pyproject_path.read_text(encoding="utf-8"))
+        project_name = data["project"]["name"]
+    except (KeyError, TypeError, ValueError) as exc:
+        raise ValueError(f"Invalid project metadata: {exc}") from exc
+    if not isinstance(project_name, str):
+        raise TypeError("Project name must be a string")
+    return _normalize_name(project_name)
+
+
 def load_installed_expected_versions(
     distribution_name: str = "opera-eco",
 ) -> dict[str, str]:
@@ -160,10 +174,15 @@ def load_installed_expected_versions(
     }
 
 
-def validate_installed_versions(expected: Mapping[str, str]) -> None:
-    """Raise once with every missing or mismatched installed distribution."""
+def validate_installed_versions(
+    expected: Mapping[str, str], ignored_packages: set[str] | None = None
+) -> None:
+    """Raise for missing or mismatched distributions except explicit candidates."""
+    ignored = {_normalize_name(package) for package in ignored_packages or set()}
     problems: list[str] = []
     for package, expected_version in expected.items():
+        if _normalize_name(package) in ignored:
+            continue
         try:
             installed_version = importlib.metadata.version(package)
         except importlib.metadata.PackageNotFoundError:
@@ -305,7 +324,11 @@ def sync_api_sections(
         for skill_name, spec in SKILL_API_SPECS.items()
         if skill_name != "opera"
     }
-    validate_installed_versions(external_expected)
+    candidate_package = load_project_name() if pyproject_path is None else None
+    validate_installed_versions(
+        external_expected,
+        {candidate_package} if candidate_package is not None else None,
+    )
     rendered: dict[Path, tuple[bytes, bytes]] = {}
     for skill_name, spec in SKILL_API_SPECS.items():
         path = skills_dir / SKILL_FILES[skill_name]

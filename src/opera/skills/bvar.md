@@ -2,7 +2,7 @@
 name: bvar
 description: Use this skill when working with the `bvar` Python package for Bayesian Vector Autoregressions.
 module-package: bvar
-module-version: "0.3.1"
+module-version: "0.3.2"
 ---
 
 # bvar
@@ -220,7 +220,7 @@ cumulative_change(data, levels)
     ]
   },
   "package": "bvar",
-  "version": "0.3.1"
+  "version": "0.3.2"
 }
 ```
 <!-- END GENERATED API -->

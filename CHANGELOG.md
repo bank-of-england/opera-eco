@@ -1,5 +1,40 @@
 # Changelog
 
+## [0.4.13](https://github.com/bank-of-england/opera-eco/compare/opera-eco-v0.4.12...opera-eco-v0.4.13) (2026-09-04)
+
+
+### Dependencies
+
+* update forecast-realtime to 0.5.7 ([#16](https://github.com/bank-of-england/opera-eco/issues/16)) ([65609dc](https://github.com/bank-of-england/opera-eco/commit/65609dc39843c503aa547d7d4b9949dbd7601a5d))
+
+## [0.4.12](https://github.com/bank-of-england/opera-eco/compare/opera-eco-v0.4.11...opera-eco-v0.4.12) (2026-09-03)
+
+
+### Dependencies
+
+* update nowcast-midas to 0.0.2 ([#14](https://github.com/bank-of-england/opera-eco/issues/14)) ([be2cf2f](https://github.com/bank-of-england/opera-eco/commit/be2cf2fb3b0671de7bb886898e0af9d372545a24))
+
+## [0.4.11](https://github.com/bank-of-england/opera-eco/compare/opera-eco-v0.4.10...opera-eco-v0.4.11) (2026-09-03)
+
+
+### Dependencies
+
+* update bvar to 0.3.2 ([#12](https://github.com/bank-of-england/opera-eco/issues/12)) ([64b5819](https://github.com/bank-of-england/opera-eco/commit/64b5819ca331b01a3a704a0f8ef9727650651587))
+
+## [0.4.10](https://github.com/bank-of-england/opera-eco/compare/opera-eco-v0.4.9...opera-eco-v0.4.10) (2026-08-30)
+
+
+### Dependencies
+
+* update forecast-realtime to 0.5.6 ([#10](https://github.com/bank-of-england/opera-eco/issues/10)) ([85dd58c](https://github.com/bank-of-england/opera-eco/commit/85dd58cbe8d5faa3ebeaf37f7ab5e338238de9e2))
+
+## [0.4.9](https://github.com/bank-of-england/opera-eco/compare/opera-eco-v0.4.8...opera-eco-v0.4.9) (2026-08-30)
+
+
+### Bug Fixes
+
+* exempt candidate package from ecosystem pin check ([bc35d9f](https://github.com/bank-of-england/opera-eco/commit/bc35d9fc71187f848748faa44aa9e7281d26625d))
+
 ## [0.4.8](https://github.com/bank-of-england/opera-eco/compare/opera-eco-v0.4.7...opera-eco-v0.4.8) (2026-08-30)
 
 

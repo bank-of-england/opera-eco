@@ -2,7 +2,7 @@
 name: nowcast-midas
 description: MIDAS & SC-MIDAS nowcasting—mixed-freq regressions + combo forecasts. Quarterly GDP-like targets from monthly indicators. MultiMIDAS multi-regressors, decomposition, realtime, dummy periods, long-fmt output.
 module-package: nowcast-midas
-module-version: "0.0.1"
+module-version: "0.0.2"
 ---
 
 # nowcast-midas
@@ -194,7 +194,7 @@ Only `'ols'` valid for almon/unrestricted; beta/exp_almon → NLS forced.
     ]
   },
   "package": "nowcast-midas",
-  "version": "0.0.1"
+  "version": "0.0.2"
 }
 ```
 <!-- END GENERATED API -->

@@ -1,241 +1,138 @@
-# Contributor Guide
+# Contributing to opera-eco
 
-## Initial Setup
+## 1. Set up your fork
 
-1. Fork and clone the repository:
+Fork the repository on GitHub, then clone your fork:
 
 ```bash
-git clone https://github.com/bank-of-england/opera-eco.git
+git clone https://github.com/<your-github-user>/opera-eco.git
 cd opera-eco
 ```
 
-2. Install the development dependencies:
+Add the main repository as `upstream` so you can fetch its latest changes:
 
 ```bash
-pip install -e ".[dev,docs,modules,notebooks,test]"  # Install development dependencies.
+git remote add upstream https://github.com/bank-of-england/opera-eco.git
 ```
 
-3. Install the pre-commit hooks:
+Create and activate a Python 3.11 or newer environment, then install the package and all contributor dependencies:
+
+```bash
+python -m pip install -e ".[dev]"
+```
+
+The `dev` extra includes the pinned ecosystem modules, test dependencies, documentation and notebook tools, and quality checks.
+
+Install the pre-commit hooks:
 
 ```bash
 pre-commit install
 ```
 
-Pre-commit runs the following checks when you commit changes:
-
-- Ruff's linter, with automatic fixes where possible
-- Ruff's formatter
-- NumPy-style docstring validation with `pydoclint`
-- Strict validation of the Marimo example
-
-To run every hook across the repository without creating a commit, use:
+The hooks run Ruff linting and formatting checks, NumPy-style docstring checks with `pydoclint`, a strict Zensical documentation build, and strict validation of the Marimo example. Run them across the repository with:
 
 ```bash
 pre-commit run --all-files
 ```
 
-Pre-commit does not build the documentation site or distribution package. Run the commands in [Documentation](#documentation) and [Code Style](#code-style) when you need those checks.
+Pre-commit does not run pytest or build the distribution. See [Run the checks](#3-run-the-checks) for the remaining commands.
 
-### Updating Ecosystem Modules
+## 2. Develop a change
 
-1. Change the exact pins in the `modules` optional-dependency extra.
-2. Install the package and all quality dependencies with:
-
-   ```bash
-   python -m pip install -e ".[dev,docs,modules,notebooks,test]"
-   ```
-
-Use the same interpreter for installation and testing to keep the environment aligned with the manifest.
-3. Run the installed-version guard:
-
-   ```bash
-   pytest src/opera/tests/skills_tests/test_skill_api.py::test_installed_versions_match_manifest
-   ```
-
-4. Synchronize the generated API sections, then review the diff:
-
-   ```bash
-   opera skills sync-api
-   git diff -- src/opera/skills
-   ```
-
-5. Update the guidance and snippets for changed APIs.
-6. Run the snippet, contract, and pipeline lanes:
+The `dev` branch is the integration branch. Create feature, fix, and documentation branches from `upstream/dev`, then open pull requests back to `dev`. The protected `main` branch contains released code and receives changes through maintainer pull requests from `dev`.
 
 ```bash
+git fetch upstream
+git switch -c fix/123-short-description upstream/dev
+```
+
+Use branch names such as `feature/<issue>`, `fix/<issue>`, and `docs/<topic>`. Add or update tests and documentation with the implementation.
+
+Use [Conventional Commits](https://www.conventionalcommits.org/) for commit subjects. Common types are `fix:`, `feat:`, `deps:`, `docs:`, and `chore:`. Release Please uses these subjects to build the changelog.
+
+When the change is ready, push the branch to your fork:
+
+```bash
+git push -u origin fix/123-short-description
+```
+
+## 3. Run the checks
+
+Run the local hooks and test suite before opening a pull request:
+
+```bash
+pre-commit run --all-files
+pytest
+```
+
+The package-quality workflow also builds the distribution, validates generated files, builds the documentation in strict mode, and runs each test lane. To reproduce those checks locally:
+
+```bash
+python -m build
+python -m twine check dist/*
+
+marimo check --strict examples/illustration_marimo.py
+marimo export md examples/illustration_marimo.py \
+	--output docs/notebooks/illustration.md \
+	--flavor pymdown \
+	--force
+git diff --exit-code -- docs/notebooks/illustration.md
+
+zensical build --clean --strict
+
+pytest src/opera/tests/skills_tests/test_skill_api.py::test_external_installed_versions_match_manifest
+opera skills sync-api
+git diff --exit-code -- src/opera/skills
+
 pytest -n auto -m skill_snippet
 pytest -n auto -m contract
 pytest -n auto -m pipeline
 ```
 
-7. Bump `opera-eco`. Tag and release only after the module upgrade merges.
+Run the complete set when changing packaging, generated documentation, ecosystem pins, shared contracts, or pipelines. For a smaller change, run the checks relevant to the affected area in addition to pre-commit and pytest.
 
-A generated API diff requires human review, even when every test passes. An empty API diff and passing snippets may merge under the normal approval policy.
+### Documentation
 
-4. Verify the installation:
+The site uses Zensical. The source files live in `docs/`, and the generated site in `site/` should not be edited by hand.
 
-```bash
-pytest
-```
+The end-to-end Marimo example lives in `examples/illustration_marimo.py`. When it changes, regenerate and commit `docs/notebooks/illustration.md` with the export command above. Continuous integration regenerates the file and fails if it differs from the committed version.
 
-## Development Workflow
+### Updating ecosystem modules
 
-### Branch Strategy
+The `modules` optional-dependency group in `pyproject.toml` is the integration manifest for compatible OPERA releases. To update a module:
 
-- **`main`**: Production-ready code
-- **Feature branches**: `feature/your-feature-name`
-- **Bug fixes**: `fix/issue-description`
-- **Documentation**: `docs/topic-name`
+1. Change its exact version pin in `pyproject.toml`.
+2. Reinstall the contributor environment with `python -m pip install -e ".[dev]"`.
+3. Run the installed-version test listed above.
+4. Run `opera skills sync-api` and review every change under `src/opera/skills/`.
+5. Update affected guidance and snippets.
+6. Run the `skill_snippet`, `contract`, and `pipeline` test lanes.
 
-## Protected Branches and Pull Requests
+Generated API changes require human review even when every test passes.
 
-All contributions must be submitted through a pull request. The `main` branch is protected, so contributors cannot push changes directly to it. Create a branch from `main`, commit and push your changes there, then open a pull request targeting `main`. The required check is the `package-quality` workflow, which must pass before the pull request can merge. Automated dependency and release changes follow the same pull-request process.
+OPERA module repositories normally open or update these pin pull requests after publishing a release. Their `update-ecosystem.yml` workflows use a stable branch per module, allowing a later release to refresh an existing pull request.
 
-### Creating a Feature Branch
+## 4. Submit a pull request
 
-```bash
-git checkout main
-git pull origin main
-git checkout -b feature/your-feature-name
-```
+Before opening a pull request:
 
-### Keeping Your Branch Updated
+1. Link the issue that the change addresses.
+2. Add an appropriate test for behavior changes.
+3. Update affected documentation and generated files.
+4. Run the relevant checks above.
+5. Open the pull request against `dev`.
 
-```bash
-git checkout main
-git pull origin main
-git checkout feature/your-feature-name
-   git rebase main  # Merge main instead when necessary.
-```
+Pull requests to `dev` or `main` run the **Package quality** workflow. It builds and inspects the package, runs pre-commit, checks the Marimo source and generated documentation, builds the documentation site, validates module pins and generated skill APIs, and runs the snippet, contract, and pipeline suites.
 
-### Commit Your Changes
+## 5. Release a version (maintainers)
 
-```bash
-git add .
-git commit -m "describe your changes"
-git push  # Or specify the branch explicitly.
-```
+When `dev` is ready to release, open a pull request from `dev` to `main`. Merging it starts [Release Please](https://github.com/googleapis/release-please), which opens or updates a release pull request containing the next package version and generated `CHANGELOG.md` entries.
 
-## Code Standards
+This repository uses the `always-bump-patch` strategy, so normal releases increment the patch version. A `Release-As: <version>` footer on a typed commit provides a one-time override. Do not edit generated release sections in `CHANGELOG.md` by hand.
 
-### Code Style
+Release Please enables auto-merge for its pull request. After the required checks and branch protection rules pass, merging that pull request creates the version tag and GitHub release. Publishing the release starts two workflows:
 
-Use Ruff for formatting and linting:
+- **Publish to PyPI** builds, validates, and publishes the distribution.
+- **Deploy Documentation to GitHub Pages** builds and deploys the Zensical site.
 
-```bash
-# Format the code.
-ruff format .
-
-# Check for lint issues.
-ruff check .
-
-# Fix issues that Ruff can resolve.
-ruff check . --fix
-
-# Check formatting without changing files.
-ruff format --check .
-
-# Build the package.
-python -m build
-
-# Build the documentation.
-zensical build
-```
-
-## Documentation
-
-The documentation site is built with Zensical. The end-to-end example is also maintained as a Marimo notebook in `examples/illustration_marimo.py`. Its Markdown export is checked into `docs/notebooks/illustration.md` and must be regenerated when the notebook changes.
-
-Install the documentation dependencies in an existing development environment:
-
-```bash
-pip install -e ".[docs,notebooks]"
-```
-
-Regenerate the notebook documentation explicitly when needed:
-
-```bash
-marimo export md examples/illustration_marimo.py \
-   --output docs/notebooks/illustration.md \
-   --flavor pymdown \
-   --force
-```
-
-Build the complete documentation site locally, including strict validation:
-
-```bash
-zensical build --clean --strict
-```
-
-Continuous integration regenerates `docs/notebooks/illustration.md` and fails when the export changes. The checked-in notebook documentation therefore stays current.
-
-### Naming Conventions
-
-- **Variables**: `snake_case`
-- **Functions/methods**: `snake_case`
-- **Classes**: `PascalCase`
-- **Constants**: `UPPER_SNAKE_CASE`
-- **Private functions/methods**: `_leading_underscore`
-
-## Submitting Changes
-
-### Before Submitting
-
-1. Open an issue to discuss the bug or feature.
-2. Use the issue number in the branch name, for example `fix/1-prior`.
-3. Make the change and add an appropriate test.
-4. Format, document, and test the code:
-
-```bash
-ruff format
-ruff check .
-pytest
-```
-
-5. Commit and push the changes:
-
-```bash
-git add .
-git commit -m "fix: describe your changes"
-git push origin fix/#1-prior
-```
-
-6. Submit a pull request.
-
-## Creating a Release (for maintainers)
-
-Release Please watches `main` for Conventional Commits. It opens or updates a release pull request with the next version and changelog entries. The commit subject must have a recognized type, such as `fix:`, `feat:`, or `deps:`; an untyped subject is ignored even when its body contains a `Release-As: ...` footer. A `Release-As: 0.4.5` footer is useful for a one-time release because it overrides the proposed version after the commit has been parsed. It does not make an otherwise untyped commit releasable.
-
-This repository configures Release Please with an `always-bump-patch` versioning strategy. Therefore `fix:`, `deps:`, `feat:`, and breaking commits all produce the next patch release: for example, `0.4.7` becomes `0.4.8`. Commit types still organize the changelog, but they do not change the version bump. `Release-As: ...` remains an exact one-time version override and should not be used for normal changes. The release workflow enables auto-merge on the Release Please pull request; GitHub merges it after the required quality checks and branch protection rules pass. Keep work on `dev` until it is ready for the automatic release path through `main`.
-
-Configure the `RELEASE_PLEASE_TOKEN` repository secret with a token that can write contents, issues, pull requests, tags, and releases. A token with those permissions is required so the Release Please pull request and release can trigger the downstream publication and documentation workflows. Enable **Allow auto-merge** in the repository settings and configure the package-quality check as required for `main`. Required human reviews must not apply to these automation pull requests unless the token's identity is allowed to bypass that rule. The workflows request auto-merge only for module pin and Release Please pull requests; all other pull requests remain manual.
-
-Before merging a change into `main`, run the quality checks locally:
-
-```bash
-ruff check .
-ruff format --check .
-pre-commit run --all-files
-marimo export md examples/illustration_marimo.py \
-   --output docs/notebooks/illustration.md \
-   --flavor pymdown \
-   --force
-git diff --exit-code -- docs/notebooks/illustration.md
-zensical build --clean --strict
-pytest
-```
-
-When GitHub auto-merges the Release Please pull request, Release Please creates the version tag and GitHub release. The published release starts these workflows:
-
-- `publish-pypi.yml` builds the distribution and publishes it to PyPI.
-- `deploy-docs.yml` builds the documentation site and deploys it to GitHub Pages.
-
-Release Please updates `CHANGELOG.md`; do not edit generated release sections by hand. The PyPI and documentation workflows also support manual dispatch for an existing tag.
-
-### Module pin pull requests
-
-Each module repository must have an `update-ecosystem.yml` workflow that runs after its `Publish to PyPI` workflow succeeds. It reads the released version, updates only that module's exact pin in `opera-eco`, and opens or updates a pull request. The workflow enables auto-merge, and the `opera-eco` package-quality workflow validates the complete pinned set before GitHub merges the pull request.
-
-Configure an `OPERA_ECO_PR_TOKEN` secret in each module repository. Use a fine-grained token or GitHub App token with read/write access to `Contents` and `Pull requests` in `bank-of-england/opera-eco`. The default token from the module repository cannot push a branch or open a pull request in another repository.
-
-The update workflow uses one stable branch per module. A later release of the same module updates its existing pull request, while releases of different modules use separate branches and pull requests.
+Both workflows can also be dispatched manually for an existing ref.

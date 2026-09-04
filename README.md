@@ -1,9 +1,16 @@
 # OPERA: Open-Source Prediction Evaluation and Real-Time Analysis
 
-**[Documentation](https://bank-of-england.github.io/opera-eco/)**
+**[Documentation](https://bank-of-england.github.io/opera-eco/)** | **[Add your own model](https://bank-of-england.github.io/opera-eco/guide/adding_a_model/)**
 
-OPERA is a modular ecosystem aimed at streamlining forecasting tasks for economists and fostering open collaboration. Model logic - estimation, forecasting, forecast decomposition - is separated from the real-time workflow, making it easier to compare models in replicable environments and leverage open source contributions. The ecosystem is currently composed of seven blocks which cover the full pipeline from raw data to evaluation. Its architecture, interfaces and design principles reflect the specific constraints of macro analysis: data revision, ragged edge, mixed-frequency, conditional projections, uncertainty quantification, narrative accounting and nested models. By making these modules open-source, OPERA provides a platform for central bankers, academics and other forecasters to share infrastructure and collaborate.
+OPERA is a modular ecosystem for real-time forecasting and open collaboration. It is composed of the following modules:
 
+- [`opera-eco`](https://github.com/bank-of-england/opera-eco) pins compatible releases and supplies documentation, AI skills, and integration tests.
+- [`forecast_evaluation`](https://github.com/bank-of-england/forecast_evaluation) validates vintaged outturns and forecasts and provide evaluation and visualisation capabilities.
+- [`forecast_realtime`](https://github.com/bank-of-england/forecast-realtime) runs models across vintages.
+- [`bvar`](https://github.com/bank-of-england/bvar) provides tools for working with Bayesian VARs.
+- [`nowcast-midas`](https://github.com/bank-of-england/nowcast-midas) nowcasts quarterly targets from higher-frequency indicators using MIDAS anc combination techniques.
+- [`forecast_combo`](https://github.com/bank-of-england/forecast-combo) combines forecasts through averaging, regression, error-based weighting, or hierarchies.
+- [`news_decomp`](https://github.com/bank-of-england/news-decomp) attributes nowcast levels and revisions to news, re-estimation, and interaction.
 
 ---
 

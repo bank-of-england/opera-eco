@@ -16,6 +16,11 @@ repos:
         entry: pydoclint --style=numpy
         language: system
         types: [python]
+      - id: build-docs
+        name: Build documentation
+        entry: zensical build --clean --strict
+        language: system
+        pass_filenames: false
       - id: marimo-check
         name: Marimo notebook check
         entry: marimo check --strict examples/illustration_marimo.py

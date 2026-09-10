@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.15](https://github.com/bank-of-england/opera-eco/compare/opera-eco-v0.4.14...opera-eco-v0.4.15) (2026-09-10)
+
+
+### Dependencies
+
+* update bvar to 0.3.3 ([#23](https://github.com/bank-of-england/opera-eco/issues/23)) ([a0cb739](https://github.com/bank-of-england/opera-eco/commit/a0cb739fc55ea86f17121fe94e0b4b3be5a7543f))
+
 ## [0.4.14](https://github.com/bank-of-england/opera-eco/compare/opera-eco-v0.4.13...opera-eco-v0.4.14) (2026-09-10)
 
 

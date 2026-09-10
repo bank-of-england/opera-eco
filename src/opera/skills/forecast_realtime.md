@@ -2,7 +2,7 @@
 name: forecast-realtime
 description: Use when working with the `forecast_realtime` Python package.
 module-package: forecast_realtime
-module-version: "0.5.7"
+module-version: "0.5.8"
 ---
 
 # forecast_realtime
@@ -26,11 +26,6 @@ from forecast_realtime import (
     MATLABModel,
     JuliaModel,
     generate_synthetic_data,
-    ModelInputRequirements,
-    InputMetricMapping,
-    ResolvedTransformationPlan,
-    RawInputBundle,
-    PreparedModelInputs,
     models,
 )
 import forecast_realtime.models as models
@@ -225,7 +220,7 @@ The framework `fit()`/`forecast()` arguments are `y_lags` and `X_lags`; they con
 
 `transform_forecast_inputs(y_history, y_conditioning=None, X_history=None, X_future=None, y_variables, X_variables=None, frequency=None, frequencies=None, y_input_metrics=None, X_input_metrics=None, y_conditioning_input_metrics=None, X_conditioning_input_metrics=None)`
 
-`ResolvedTransformationPlan` is the root-exported alias for the fitted `FittedDataTransformation` record. `ModelInputRequirements` describes a model's requested metrics and exposes `y_mapping` and `X_mapping`. `InputMetricMapping` freezes one role's source mapping and exposes `mapping`. `RawInputBundle` carries raw history and conditioning frames with role-specific metric provenance. `PreparedModelInputs` carries transformed `y`, `X`, and their selected metrics.
+`DataTransformationPipeline` applies variable-specific transformations and reconstructs level forecasts. `FittedDataTransformation` stores the fitted transformation state used by a model. Supported metrics are selected through the pipeline's variable-to-metric mapping.
 
 Supported metrics are `levels`, `logs`, `log diff`, `diff`, `pop`, and `yoy`. The transformation mapping is variable to metric. `logs` is the natural log; `diff` is a first difference; `log diff` differences logs; `pop` is period-on-period percentage growth; and `yoy` uses 12 monthly or 4 quarterly periods. Frequencies are inferred per raw column as `M` or `Q`; explicit `frequencies` can be supplied for wide inputs. Derived metrics are computed from levels, and future paths are combined before differencing so the first future value has the correct historical base.
 
@@ -348,16 +343,12 @@ The public result is `runner.data`; model-local results are `ForecastResult.fore
       "ForecastResult",
       "ForecastTree",
       "Formula",
-      "InputMetricMapping",
       "JuliaModel",
       "MATLABModel",
-      "ModelInputRequirements",
-      "PreparedModelInputs",
       "RModel",
-      "RawInputBundle",
       "RealTimeModel",
-      "ResolvedTransformationPlan",
       "TreeNode",
+      "__version__",
       "generate_synthetic_data",
       "models"
     ],
@@ -380,7 +371,7 @@ The public result is `runner.data`; model-local results are `ForecastResult.fore
     ]
   },
   "package": "forecast_realtime",
-  "version": "0.5.7"
+  "version": "0.5.8"
 }
 ```
 <!-- END GENERATED API -->

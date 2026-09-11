@@ -2,7 +2,7 @@
 name: forecast-realtime
 description: Use when working with the `forecast_realtime` Python package.
 module-package: forecast_realtime
-module-version: "0.5.8"
+module-version: "0.5.9"
 ---
 
 # forecast_realtime
@@ -371,7 +371,7 @@ The public result is `runner.data`; model-local results are `ForecastResult.fore
     ]
   },
   "package": "forecast_realtime",
-  "version": "0.5.8"
+  "version": "0.5.9"
 }
 ```
 <!-- END GENERATED API -->

@@ -76,6 +76,7 @@ dev = [
     "opera-eco[notebooks]",
     "opera-eco[docs]",
     "build",
+    "conventional-pre-commit",
     "pre-commit",
     "pydoclint",
     "ruff",

@@ -160,17 +160,17 @@ from forecast_realtime.models import (
 
 Attribute access imports the implementation on demand. Missing optional dependencies raise a model-specific `ModuleNotFoundError`. The registry has scikit-learn models, XGBoost, the BVAR wrapper, R/Fable wrappers, and the MIDAS wrappers listed above. A name not in this list is not a registered forecast model.
 
-The framework `fit()`/`forecast()` arguments are `y_lags` and `X_lags`; they control the target and regressor lagged design for that call. `n_lags` remains a constructor parameter for `ForecastBVAR`, `ForecastMIDAS`, and `ForecastMultiMIDAS`, and `lags` remains a constructor parameter for `ForecastRlm`. These model-specific parameters configure the model itself and are distinct from the framework lag arguments. Linear models use `forecast_strategy="recursive"` by default; `"direct"` fits one model per horizon and requires `steps`. Linear `scale=True` standardises the target and regressors and maps predictions back. Tree `standardise=True` has the corresponding behaviour. `formula` is supported where shown by the constructor and is applied after lags and dummies.
+The framework `fit()`/`forecast()` arguments are `y_lags` and `X_lags`; they control the target and regressor lagged design for that call. `n_lags` remains a constructor parameter for `ForecastBVAR`, `ForecastMIDAS`, and `ForecastMultiMIDAS`, and `lags` remains a constructor parameter for `ForecastRlm`. These model-specific parameters configure the model itself and are distinct from the framework lag arguments. Linear models use `forecast_strategy="recursive"` by default; `"direct"` fits one model per horizon and requires `steps`. Linear `scale=True` standardises the target and regressors and maps predictions back. Tree `standardise=True` has the corresponding behaviour. `formula` is supported where shown by the constructor and is applied after lags and dummies. Regularised models leave target lags unpenalised by default; set `penalise_ar=True` to penalise lags created by `y_lags`. Dummy variables remain unpenalised, and the option has no effect on `ForecastOLS`.
 
 ### Linear models
 
-`ForecastOLS(fit_intercept=True, forecast_strategy="recursive", steps=None, scale=False, label=None, formula=None, data_transformation=None, drop_nans=False, align_start_dates=True)`
+`ForecastOLS(fit_intercept=True, forecast_strategy="recursive", steps=None, scale=False, label=None, formula=None, data_transformation=None, drop_nans=False, align_start_dates=True, penalise_ar=False)`
 
-`ForecastRidge(fit_intercept=True, forecast_strategy="recursive", steps=None, scale=False, alpha=None, cv=None, label=None, alphas=None, alpha_scaling="mean", formula=None, data_transformation=None, drop_nans=False, align_start_dates=True)`
+`ForecastRidge(fit_intercept=True, forecast_strategy="recursive", steps=None, scale=False, alpha=None, cv=None, label=None, alphas=None, alpha_scaling="mean", formula=None, data_transformation=None, drop_nans=False, align_start_dates=True, penalise_ar=False)`
 
-`ForecastLasso(fit_intercept=True, forecast_strategy="recursive", steps=None, scale=False, alpha=None, cv=None, label=None, alphas=None, formula=None, data_transformation=None, drop_nans=False, align_start_dates=True)`
+`ForecastLasso(fit_intercept=True, forecast_strategy="recursive", steps=None, scale=False, alpha=None, cv=None, label=None, alphas=None, formula=None, data_transformation=None, drop_nans=False, align_start_dates=True, penalise_ar=False)`
 
-`ForecastElasticNet(fit_intercept=True, forecast_strategy="recursive", steps=None, scale=False, alpha=None, l1_ratio=0.5, cv=None, label=None, alphas=None, formula=None, data_transformation=None, drop_nans=False, align_start_dates=True)`
+`ForecastElasticNet(fit_intercept=True, forecast_strategy="recursive", steps=None, scale=False, alpha=None, l1_ratio=0.5, cv=None, label=None, alphas=None, formula=None, data_transformation=None, drop_nans=False, align_start_dates=True, penalise_ar=False)`
 
 `ForecastOLS` uses `numpy.linalg.lstsq`. Ridge, Lasso, and ElasticNet use scikit-learn; `cv` selects a penalty by cross-validation. Ridge accepts `alpha_scaling="mean"` or `"sum"`; `alphas` is used with cross-validation. All four are single-target models. Complete-case fitting is controlled by `drop_nans`; `align_start_dates=True` aligns the first complete target and regressor date.
 
@@ -222,7 +222,7 @@ The framework `fit()`/`forecast()` arguments are `y_lags` and `X_lags`; they con
 
 `DataTransformationPipeline` applies variable-specific transformations and reconstructs level forecasts. `FittedDataTransformation` stores the fitted transformation state used by a model. Supported metrics are selected through the pipeline's variable-to-metric mapping.
 
-Supported metrics are `levels`, `logs`, `log diff`, `diff`, `pop`, and `yoy`. The transformation mapping is variable to metric. `logs` is the natural log; `diff` is a first difference; `log diff` differences logs; `pop` is period-on-period percentage growth; and `yoy` uses 12 monthly or 4 quarterly periods. Frequencies are inferred per raw column as `M` or `Q`; explicit `frequencies` can be supplied for wide inputs. Derived metrics are computed from levels, and future paths are combined before differencing so the first future value has the correct historical base.
+Supported metrics are `levels`, `logs`, `log diff`, `diff`, `pop`, and `yoy`. The transformation mapping is variable to metric. `logs` is the natural log; `diff` is a first difference; `log diff` differences logs; `pop` is fractional period-on-period growth (`0.1` represents 10%); and `yoy` uses 12 monthly or 4 quarterly periods. Frequencies are inferred per raw column as `M` or `Q`; explicit `frequencies` can be supplied for wide inputs. Derived metrics are computed from levels, and future paths are combined before differencing so the first future value has the correct historical base.
 
 With `reconstruct_levels=True`, realtime storage adds level forecasts for `logs`, `diff`, and `log diff` when level outturns are available. Set it to `False` to keep the native metric in `native_forecasts`. The first leading NaN from `diff`, `log diff`, `pop`, or `yoy` can be removed with `drop_transformation_nans=True`, the default. Interior missing observations are not treated as leading rows.
 

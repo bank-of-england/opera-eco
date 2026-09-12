@@ -27,9 +27,10 @@ Install the pre-commit hooks:
 
 ```bash
 pre-commit install
+pre-commit install --hook-type commit-msg
 ```
 
-The hooks run Ruff linting and formatting checks, NumPy-style docstring checks with `pydoclint`, a strict Zensical documentation build, and strict validation of the Marimo example. Run them across the repository with:
+The hooks check Conventional Commit messages for Release Please, run Ruff linting and formatting checks, check NumPy-style docstrings with `pydoclint`, build the documentation in strict mode, and validate the Marimo example. Run them across the repository with:
 
 ```bash
 pre-commit run --all-files

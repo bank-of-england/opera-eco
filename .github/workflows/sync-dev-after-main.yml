@@ -1,0 +1,49 @@
+name: Synchronise dev after release
+
+on:
+  pull_request:
+    types: [closed]
+    branches: [main]
+
+concurrency:
+  group: sync-dev-after-main
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  sync-dev:
+    if: >-
+      github.event.pull_request.merged == true &&
+      github.event.pull_request.base.ref == 'main' &&
+      startsWith(github.event.pull_request.head.ref, 'release-please--') &&
+      github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8
+        with:
+          fetch-depth: 0
+
+      - name: Reset dev to merged main
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          set -euo pipefail
+
+          git fetch --no-tags origin \
+            refs/heads/main:refs/remotes/origin/main \
+            refs/heads/dev:refs/remotes/origin/dev
+
+          main_sha="$(git rev-parse refs/remotes/origin/main)"
+          pre_release_main_sha="$(git rev-parse "${main_sha}^")"
+          actual_dev_sha="$(git rev-parse refs/remotes/origin/dev)"
+          if [[ "$actual_dev_sha" != "$pre_release_main_sha" ]]; then
+            echo "::error::Refusing to reset dev: it no longer matches main before release PR #${PR_NUMBER}."
+            exit 1
+          fi
+
+          git switch --detach "$main_sha"
+          git push origin "HEAD:refs/heads/dev"

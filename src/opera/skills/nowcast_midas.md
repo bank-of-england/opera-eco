@@ -2,7 +2,7 @@
 name: nowcast-midas
 description: MIDAS & SC-MIDAS nowcasting—mixed-freq regressions + combo forecasts. Quarterly GDP-like targets from monthly indicators. MultiMIDAS multi-regressors, decomposition, realtime, dummy periods, long-fmt output.
 module-package: nowcast-midas
-module-version: "0.0.2"
+module-version: "0.0.3"
 ---
 
 # nowcast-midas
@@ -55,7 +55,8 @@ from nowcast_midas.combo_weights import (
     clipped_ols,
     constrained_least_squares,
     fit_average,
-    fit_weights,
+    fit_error_based_weights,
+    fit_regression_weights,
 )
 from nowcast_midas.utils import sample_combo_data, sample_data
 ```
@@ -179,7 +180,8 @@ Only `'ols'` valid for almon/unrestricted; beta/exp_almon → NLS forced.
       "clipped_ols",
       "constrained_least_squares",
       "fit_average",
-      "fit_weights"
+      "fit_error_based_weights",
+      "fit_regression_weights"
     ],
     "nowcast_midas.temporal_weights": [
       "almon",
@@ -194,7 +196,7 @@ Only `'ols'` valid for almon/unrestricted; beta/exp_almon → NLS forced.
     ]
   },
   "package": "nowcast-midas",
-  "version": "0.0.2"
+  "version": "0.0.3"
 }
 ```
 <!-- END GENERATED API -->

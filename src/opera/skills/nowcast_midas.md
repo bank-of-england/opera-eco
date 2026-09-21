@@ -55,7 +55,8 @@ from nowcast_midas.combo_weights import (
     clipped_ols,
     constrained_least_squares,
     fit_average,
-    fit_weights,
+    fit_error_based_weights,
+    fit_regression_weights,
 )
 from nowcast_midas.utils import sample_combo_data, sample_data
 ```

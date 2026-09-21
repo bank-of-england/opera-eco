@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.17](https://github.com/bank-of-england/opera-eco/compare/opera-eco-v0.4.16...opera-eco-v0.4.17) (2026-09-21)
+
+
+### Dependencies
+
+* update nowcast-midas to 0.0.3 ([#29](https://github.com/bank-of-england/opera-eco/issues/29)) ([d62ec1a](https://github.com/bank-of-england/opera-eco/commit/d62ec1ac103479f4ebd3a68c64e2b299a4721bfd))
+
 ## [0.4.16](https://github.com/bank-of-england/opera-eco/compare/opera-eco-v0.4.15...opera-eco-v0.4.16) (2026-09-12)
 
 

@@ -56,8 +56,8 @@ def test_ols_model_recovers_true_coefficients_and_decomps():
 
     # Check the forecast.
     forecast = ols.forecast(steps=1, X=X_test)
-    assert np.isclose(forecast.iloc[0, 0], y_test.iloc[0, 0], atol=1e-10), (
-        f"Forecast mismatch: forecast={forecast.iloc[0, 0]}, true={y_test.iloc[0, 0]}"
+    assert np.isclose(forecast["value"].iloc[0], y_test.iloc[0, 0], atol=1e-10), (
+        f"Forecast mismatch: forecast={forecast['value'].iloc[0]}, true={y_test.iloc[0, 0]}"
     )
 
     # Check the decomposition.

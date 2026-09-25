@@ -29,9 +29,12 @@ def test_forecast_model_fit_is_chainable_and_forecast_is_valid():
     assert model.fit(y, X) is model
     result = model.forecast(steps=2)
 
-    assert result.forecast.shape == (2, 1)
-    assert result.forecast.columns.tolist() == ["y"]
-    assert result.forecast.iloc[:, 0].tolist() == [3.0, 3.0]
+    assert result.forecast.columns.tolist() == ["date", "variable", "value"]
+    assert result.forecast["date"].tolist() == list(
+        pd.date_range("2024-01-04", periods=2)
+    )
+    assert result.forecast["variable"].tolist() == ["y", "y"]
+    assert result.forecast["value"].tolist() == [3.0, 3.0]
 
 
 def test_forecast_model_rejects_forecast_with_wrong_columns():

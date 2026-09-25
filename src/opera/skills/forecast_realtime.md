@@ -2,7 +2,7 @@
 name: forecast-realtime
 description: Use when working with the `forecast_realtime` Python package.
 module-package: forecast_realtime
-module-version: "0.5.9"
+module-version: "0.5.10"
 ---
 
 # forecast_realtime
@@ -46,15 +46,11 @@ from forecast_realtime.models import (
     ForecastOLS,
     ForecastBridgeOLS,
 )
-from forecast_realtime.data_transformation import (
-    DataTransformationPipeline,
-    FittedDataTransformation,
-)
 from forecast_realtime.linear_regression import LinearRegression
 from forecast_realtime.tree_regression import TreeRegression
 ```
 
-The root exports above match `forecast_realtime.__all__`; `models` is the lazy model module. `LinearRegression`, `TreeRegression`, `DataTransformationPipeline`, and `FittedDataTransformation` are imported from their submodules rather than re-exported at the package root.
+  The root exports above match `forecast_realtime.__all__`; `models` is the lazy model module. `LinearRegression` and `TreeRegression` are imported from their submodules rather than re-exported at the package root. Data transformations are configured through model arguments; the transformation classes are internal in 0.5.10.
 
 ## ForecastModel
 
@@ -208,7 +204,7 @@ The framework `fit()`/`forecast()` arguments are `y_lags` and `X_lags`; they con
 
 ## Data transformations
 
-`DataTransformationPipeline(data_transformation)` is the reusable pipeline for raw wide and long-form inputs. Its public methods are:
+Models accept `data_transformation` mappings for raw wide and long-form inputs. Internally, `DataTransformationPipeline(data_transformation)` handles these inputs with methods including:
 
 `apply(outturns, forecasts, y_variables, X_variables)`
 
@@ -371,7 +367,7 @@ The public result is `runner.data`; model-local results are `ForecastResult.fore
     ]
   },
   "package": "forecast_realtime",
-  "version": "0.5.9"
+  "version": "0.5.10"
 }
 ```
 <!-- END GENERATED API -->

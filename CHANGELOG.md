@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.19](https://github.com/bank-of-england/opera-eco/compare/opera-eco-v0.4.18...opera-eco-v0.4.19) (2026-10-23)
+
+
+### Dependencies
+
+* update forecast-combo to 0.1.2 ([#34](https://github.com/bank-of-england/opera-eco/issues/34)) ([558b3dd](https://github.com/bank-of-england/opera-eco/commit/558b3ddbf34a900a204b6b73f098d2b9b23b38af))
+
 ## [0.4.18](https://github.com/bank-of-england/opera-eco/compare/opera-eco-v0.4.17...opera-eco-v0.4.18) (2026-09-25)
 
 

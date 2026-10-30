@@ -2,7 +2,7 @@
 name: forecast-combo
 description: Use this skill when working with the `forecast_combo` Python package.
 module-package: forecast_combo
-module-version: "0.1.2"
+module-version: "0.1.4"
 ---
 
 # forecast_combo
@@ -258,7 +258,7 @@ combo.fit(
     ]
   },
   "package": "forecast_combo",
-  "version": "0.1.2"
+  "version": "0.1.4"
 }
 ```
 <!-- END GENERATED API -->
